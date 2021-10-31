@@ -127,7 +127,7 @@ The point is, that the `executorService` defines a Structured Concurrency Contex
 hierarchy or tree of Contexts, where you have control over each context. You can let them finish
 and wait, or tell them to stop, and wait. In the Bounded Context of the Java try-with-resources,
 when you get to the end of the `try` block, `close()` is called, which basically does
-`executorService.shutdown()` and then `awaitTermination*()` thereby cleaning up the context.
+`executorService.shutdown()` and then `awaitTermination()` thereby cleaning up the context.
 
 ## Exceptions
 
@@ -167,7 +167,7 @@ the necessary function extension. 🙄
 IMHO, Kotlin should implement try-with-resources because as I have discovered `use` has pitfalls in
 using it correctly.
 
-### Use
+#### Use
 
 In Java we can have code like 
 
