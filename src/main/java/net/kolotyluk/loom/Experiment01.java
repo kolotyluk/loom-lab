@@ -7,7 +7,57 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * https://wiki.openjdk.java.net/display/loom/Getting+started
+ *  <h1>Experiment Suite 01</h1>
+ *  <p>
+ *      This suite of experiments is a quick way to jump into Project Loom, because we're here to
+ *      'il-loom-inate' things 😉
+ *  </p>
+ *      We're going to start off by running two identical experiments, one with conventional Platform Threads
+ *      and the other with Loom Virtual Threads, so we can compare the results. If you do something like
+ *      <pre>
+ *
+ *  System.out.println(Thread.currentThread().toString()));
+ *      </pre>
+ *      You will get what I call a 'Thread Signature.' For Platform Threads, the Thread Signature looks like
+ *      <pre>
+ *
+ *  Thread[#16,Thread-0,5,main]
+ *      </pre>
+ *  where
+ *      <dl style="margin-left: 3pc">
+ *          <dt><tt>Thread</tt></dt>
+ *              <dd>distinguishes this from a Virtual Thread</dd>
+ *          <dt><tt>#16</tt></dt>
+ *              <dd>is the raw Thread ID</dd>
+ *          <dt><tt>Thread-0</tt></dt>
+ *              <dd>is </dd>
+ *          <dt><tt>5</tt></dt>
+ *              <dd>is </dd>
+ *          <dt><tt>main</tt></dt>
+ *              <dd>is </dd>
+ *      </dl>
+ *  For Virtual Threads, the Thread Signature looks like
+ *      <pre>
+ *
+ *  VirtualThread[#31]/runnable@ForkJoinPool-1-worker-1
+ *      </pre>
+ *  where
+ *      <dl style="margin-left: 3pc">
+ *          <dt><tt>VirtualThread</tt></dt>
+ *              <dd>distinguishes this from a Platform Thread</dd>
+ *          <dt><tt>#16</tt></dt>
+ *              <dd>is the raw Thread ID</dd>
+ *          <dt><tt>runnable</tt>></dt>
+ *              <dd>is </dd>
+ *          <dt><tt>ForkJoinPool-1</tt></dt>
+ *              <dd>is the Thread Pool the ExecutorService spawned the thread on</dd>
+ *          <dt><tt>worker-1</tt></dt>
+ *              <dd>is the Carrier Thread that the Virtual Thread is running on</dd>
+ *     </dl>
+
+ *  </p>
+ * @see <a href="https://wiki.openjdk.java.net/display/loom/Getting+started">Loom Getting Started</a>
+ * @author eric@kolotyluk.net
  */
 public class Experiment01 {
 
@@ -17,83 +67,74 @@ public class Experiment01 {
         System.out.println("Fiber Fun - Experiment 1");
         System.out.println("CPU Cores = " + Runtime.getRuntime().availableProcessors() + '\n');
 
-        /* Because we're here to 'il-loom-inate' things ;-)
-         *
-         * We're going to start right away by creating some Virtual Threads. One way to do this is via
-         * Executors.newVirtualThreadExecutor() but that may be deprecated soon, so we're going to use
-         * Executors.newThreadPerTaskExecutor(virtualThreadFactory) which needs a ThreadFactory. We could
-         * use Thread.ofPlatform() instead if we want to stay old school.
-         */
+        var platformThreadFactory = Thread.ofPlatform().factory();
         var virtualThreadFactory = Thread.ofVirtual().factory();
 
-        System.out.println("virtualThreadFactory = " + virtualThreadFactory + '\n');
-
-        /* We start with the simple case of creating some Virtual Threads from an IntStream of items,
-         * where we create a new Virtual Thread task for each item, printing out which threads we are
-         * executing on. Note that the items are printed on the startup thread, which is a Java Platform
-         * Thread. However, the tasks are printed on Virtual Threads, where each Virtual Thread is being
-         * run on a Platform Carrier Thread from the ForkJoinPool.
-         *
-         * For a first run of this experiment, you may notice that all the println output comes out orderly,
-         * and sequentially. This is because at startup, things are fairly stable, but it will soon appear
-         * more chaotic, less deterministic, more normal in a concurrent runtime environment.
-         */
-        try (var executorService = Executors.newThreadPerTaskExecutor(virtualThreadFactory)) {
-            IntStream.range(0, 15).forEach(item -> {
-                System.out.println("item = " + item + ", Thread ID = " + Thread.currentThread());
-                executorService.submit(() -> {
-                    System.out.println("\ttask = " + item + ", Thread ID = " + Thread.currentThread());
-                });
-            });
-        }
-
-        /* Just to show that we can get the same results two different ways...
-         */
-        try (var executorService = Executors.newVirtualThreadExecutor()) {
-            IntStream.range(0, 15).forEach(i -> {
-                System.out.println("i = " + i + ", Thread ID = " + Thread.currentThread());
-                executorService.submit(() -> {
-                    var thread = Thread.currentThread();
-                    System.out.println("Thread ID = " + thread);
-                });
-            });
-            executorService.awaitTermination(5, TimeUnit.SECONDS);
-        }
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        /* Now let's pause to think about this... Notice how we created an ExecutorService in order to spawn
-         * tasks... this is considered a best practice now in Java, whether you are using Platform Threads or
-         * Virtual Threads. With this pattern, the Executor, spawns tasks, and they can be spawned with either
-         * Platform Threads or Virtual Threads.
-         *
-         * While the old APIs and the old methods still exist, we should all think hard about using them,
-         * and have good reason for deviating from the Executor pattern.
-         *
-         * Another advantage of using Thead Factories is that it gives us more flexibility where we can define
-         * the thread type in one place, and use it in many.
-         */
+        experiments("Platform Threads Experiment", platformThreadFactory);
+        experiments("Virtual Threads Experiment", virtualThreadFactory);
 
         /* Up until now we always spawned our tasks inside a Java Try-With-Resources block. This is another best
          * practice, because when we exit the block, all the threads spawned with be asked to stop, and we will
          * wait for them to stop. If we uncomment the following code and run it, we can see that it can take quite
          * a long time for the program to stop.
          */
+//        var executorService = Executors.newVirtualThreadExecutor();
+//        IntStream.range(0, 15).forEach(i -> {
+//            System.out.println("i = " + i + ", Thread ID = " + Thread.currentThread());
+//            executorService.submit(() -> {
+//                var thread = Thread.currentThread();
+//                System.out.println("Thread ID = " + thread);
+//            });
+//        });
+//
+//        executorService.shutdownNow(); // 80 seconds
+    }
 
-        var executorService = Executors.newVirtualThreadExecutor();
-        IntStream.range(0, 15).forEach(i -> {
-            System.out.println("i = " + i + ", Thread ID = " + Thread.currentThread());
-            executorService.submit(() -> {
-                var thread = Thread.currentThread();
-                System.out.println("Thread ID = " + thread);
+    /**
+     * <h1>experiments</h1>
+     * <p>
+     *     Notice how we use the {@link ExecutorService} to spawn tasks on worker threads. This is considered
+     *     a best practice because it's a higher level of abstraction, and as I have learned, in Concurrent
+     *     Programming, it's generally safer to use higher levels of abstraction, because the lower levels
+     *     have been designed and implemented by experts. Also important to note is the use of
+     *     {@link ExecutorService#submit(Runnable)} or {@link ExecutorService#submit(Callable)},
+     *     and in particular, we use a
+     *     <a href="https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Lambda Expression</a>
+     *     because it reduces boilerplate in our code by also being a higher level abstraction.
+     * </p>
+     * <p>
+     *     Next, notice how we use a
+     *     <a href="https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html">try-with-resources</a>
+     *     statement to bound the lifetime of the ExecutorService. This is also considered a best practice because it
+     *     supports <a href="https://en.wikipedia.org/wiki/Structured_concurrency">Structured Concurrency</a>.
+     *     Before leaving the try { } block, {@link ExecutorService#close()} is called to clean up.
+     * </p>
+     * <p>
+     *     While the old APIs and the old methods still exist, we should all think hard about using them,
+     *     and have good reason for deviating from the ExecutorService and Structure Concurrency patterns.
+     *     Also, an advantage of using Thead Factories is that it gives us more flexibility where we can
+     *     define the thread type in one place, and use it in many.
+     * </p>
+     * @param title printed before the experiments are run
+     * @param threadFactory to use for spawning threads
+     * @author eric@kolotyluk.net
+     */
+    static void experiments(String title, ThreadFactory threadFactory) {
+        System.out.println("\n%s\n".formatted(title));
+
+        try (var executorService = Executors.newThreadPerTaskExecutor(threadFactory)) {
+            /* We start with the simple case of creating some Threads from an IntStream of items,
+             * where we create a new task Thread for each item, printing out which threads we are
+             * executing on. Note that the items are printed on the startup thread, the tasks are
+             * printed on Worker Threads as spawned by the executorService.
+             */
+            IntStream.range(0, 15).forEach(item -> {
+                System.out.println("item %s, Thread Signature %s".formatted(item, Thread.currentThread()));
+                executorService.submit(() -> {
+                    System.out.println("\ttask %s, Thread Signature %s".formatted(item,Thread.currentThread()));
+                });
             });
-        });
-
-        executorService.shutdownNow(); // 80 seconds
-
-
-
+        }
     }
 
 }

@@ -1,20 +1,63 @@
-# Fun With Project Loom Fibers
+# Project Loom Learning Laboratory
 
-Note: the `fiber` idiom of Project Loom is now the `VirtuaThread`, so I will only refer to fibers in
-the title of this project for historic reasons.
+A place to learn about [Project Loom](https://openjdk.java.net/projects/loom) through hands-on
+experimentation and exploration.
 
-Part of the *fun* of this project is throwing some Kotlin into the mix.
+My hope is to develop this into a learning tool for other people as well, so if you have ideas on how
+this can work better for you or others, please create a ticket in
+[loom-lab Issues](https://github.com/kolotyluk/loom-lab/issues).
+People are encouraged to `clone` this repo, run the experiments
+and other code, make local changes, and watch what happens.
 
-## Getting Started
+If someone wants to pay me to develop this, I will be even more motivated 🥳, but for now, it's just
+recreational programming.
+
+If you want to contribute, I will discuss this later...
+
+# Getting Started
+
+This is the part I hate the most in learning anything new as too often on-boarding is unnecessarily
+traumatic because of poor documentation and inadequate examples. 🙄 Again, if you think this section could
+be better, create an issue ticket.
+
+If you're a master hacker, a [MacGyver](https://en.wikipedia.org/wiki/MacGyver) who can figure anything
+out, I hope the boilerplate does not get in your way too much.
+
+
+## IntelliJ IDEA
+
+This projected is maintained with JetBrains [IntelliJ IDEA](https://www.jetbrains.com/idea).
+Consequently, the `.idea` folder exists in the git repo to help others get started sooner.
+
+🤔   If this makes things difficult or confusing for others, please let me know as I have some
+ideas on how to structure things better.
+
+## Getting Loom Binaries
 
 Currently, to use Project Loom you need the
-[Project Loom Early-Access Builds](http://jdk.java.net/loom)
+[Project Loom Early-Access Builds](http://jdk.java.net/loom), in particular, as of 2021-10-31 you
+need to download the `jdk-18` + `loom` runtime. This is currently incomplete, so don't use it to run
+anything in your tool chain, such as IntelliJ, just use it as a local runtime for running these
+experiments.
+
+### Macintosh
+
+tbd
 
 ### Windows
 
 On Windows I install this in `C:\Program Files (Open)\jdk-18` because `C:\Program Files` is protected
 by Windows, so it's best to let a package installer like MSI manage that, and jdk-18 does not yet
 have a package installer.
+
+
+# References
+
+- Loom
+  - [Open JDK Wiki](https://wiki.openjdk.java.net/display/loom)
+  - [Inside Java](https://inside.java/tag/loom)
+  - [GitHub](https://github.com/openjdk/loom)
+  - [Java® Platform, Standard Edition & Java Development Kit - Version 18 API Specification](https://download.java.net/java/early_access/loom/docs/api/index.html)
 
 # Insights
 
@@ -23,16 +66,30 @@ I have been using Java since 1995 before it's first commercial release. After th
 unreasonable complexity and psychological danger of C++.
 
 Out of curiosity, I did experiment a little with the original Java Green Threads, but did not really
-try too much Concurrent Programming until Platform Threads were introduced later. Jumping in with
+try too much Java Concurrent Programming until Platform Threads were introduced later. Jumping in with
 confidence, it did not take too long to realize how difficult it was to do Concurrent Programming
 properly, but things did get better.
 
-About 2005 I started playing with Scala, and Akka by 2010, where I started learning Reactive
-Programming methods. Functional Programming, Non-Blocking Code, Futures, Actors, and Streams
-with Backpressure. Several large Akka Projects I worked on, I loved starting the project and
+I discovered sanity in reading
+[Java Concurrency In Practice](https://www.amazon.ca/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601)
+where [Brian Goetz](https://www.linkedin.com/in/briangoetz) offers amazing clarity in reasoning and
+understanding. After reading this, I was ready for
+[Concurrent Programming in Java : Design Principles and Pattern](https://www.amazon.com/Concurrent-Programming-Java%C2%99-Principles-Pattern/dp/0201310090)
+where [Doug Lea](https://en.wikipedia.org/wiki/Doug_Lea) brought on a lot of academic rigor that was
+essential, but often challenging to grok. The point is, I went from believing Concurrent Programming
+is not that hard to respecting how hard ***correct*** Concurrent Programming really is.
+
+About 2005 I started playing with [Scala](https://en.wikipedia.org/wiki/Scala_(programming_language)),
+and [Akka](https://akka.io/) by 2010, where I started learning Reactive
+Programming methods; Functional Programming, Non-Blocking Code, Futures, Actors, Streams
+with Backpressure, etc. Several large Akka Projects I worked on, I loved starting the project and
 watching all the CPU Cores go to 100% initially, demonstrating how effectively Reactive Systems
 could utilize resources. After initializing, the CPU load would drop to about 10% or so until
 you started up some performance tests.
+
+After all this, the most important lesson I learned was it is generally safer and saner to program at the
+higher levels of abstraction, Futures, Actors, and Streams al la Akka, than mess with Threads,
+`syncronized`, Locks, etc.
 
 While it is clear how well these Reactive systems performed, at the raw code level we really had
 to tangle ourselves up with hard to read programming styles, especially because of Non-Blocking
@@ -46,11 +103,6 @@ the necessary concurrency. *What's Old, is New again.*
 This Git Project is a playground where I can learn how to use Project Loom, and maybe share some
 of that learning.
 
-# References
-
-- [Open JDK Wiki - Loom](https://wiki.openjdk.java.net/display/loom)
-- [Inside Java - Loom](https://inside.java/tag/loom)
-- [GitHub](https://github.com/openjdk/loom)
 
 # Lessons Learned
 
