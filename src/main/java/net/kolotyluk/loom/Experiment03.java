@@ -10,7 +10,9 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * https://wiki.openjdk.java.net/display/loom/Getting+started
+ * <h1>Experiment Suite 03</h1>
+ * @see <a href="https://wiki.openjdk.java.net/display/loom/Getting+started">Loom Getting Started</a>
+ * @see <a href="https://www.youtube.com/watch?v=Nb85yJ1fPXM">Java ExecutorService - Part 1</a>
  */
 public class Experiment03 {
 

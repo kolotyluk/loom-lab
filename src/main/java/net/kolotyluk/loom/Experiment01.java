@@ -1,10 +1,10 @@
 package net.kolotyluk.loom;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  *  <h1>Experiment Suite 01</h1>
@@ -57,13 +57,12 @@ import java.util.stream.Stream;
 
  *  </p>
  * @see <a href="https://wiki.openjdk.java.net/display/loom/Getting+started">Loom Getting Started</a>
+ * @see <a href="https://www.youtube.com/watch?v=Nb85yJ1fPXM">Java ExecutorService - Part 1</a>
  * @author eric@kolotyluk.net
  */
 public class Experiment01 {
 
-    static long timestamp = 0;
-
-    public static void main(String args[]){
+    public static void main(String ... args){
         System.out.println("Fiber Fun - Experiment 1");
         System.out.println("CPU Cores = " + Runtime.getRuntime().availableProcessors() + '\n');
 
@@ -72,22 +71,6 @@ public class Experiment01 {
 
         experiments("Platform Threads Experiment", platformThreadFactory);
         experiments("Virtual Threads Experiment", virtualThreadFactory);
-
-        /* Up until now we always spawned our tasks inside a Java Try-With-Resources block. This is another best
-         * practice, because when we exit the block, all the threads spawned with be asked to stop, and we will
-         * wait for them to stop. If we uncomment the following code and run it, we can see that it can take quite
-         * a long time for the program to stop.
-         */
-//        var executorService = Executors.newVirtualThreadExecutor();
-//        IntStream.range(0, 15).forEach(i -> {
-//            System.out.println("i = " + i + ", Thread ID = " + Thread.currentThread());
-//            executorService.submit(() -> {
-//                var thread = Thread.currentThread();
-//                System.out.println("Thread ID = " + thread);
-//            });
-//        });
-//
-//        executorService.shutdownNow(); // 80 seconds
     }
 
     /**
@@ -120,8 +103,9 @@ public class Experiment01 {
      * @author eric@kolotyluk.net
      */
     static void experiments(String title, ThreadFactory threadFactory) {
-        System.out.println("\n%s\n".formatted(title));
+        System.out.printf("\n%s\n%n", title);
 
+        // This try block implicitly defines the context or scope for one level of Structured Concurrency
         try (var executorService = Executors.newThreadPerTaskExecutor(threadFactory)) {
             /* We start with the simple case of creating some Threads from an IntStream of items,
              * where we create a new task Thread for each item, printing out which threads we are
@@ -129,9 +113,9 @@ public class Experiment01 {
              * printed on Worker Threads as spawned by the executorService.
              */
             IntStream.range(0, 15).forEach(item -> {
-                System.out.println("item %s, Thread Signature %s".formatted(item, Thread.currentThread()));
+                System.out.printf("item %s, Thread Signature %s\n", item, Thread.currentThread());
                 executorService.submit(() -> {
-                    System.out.println("\ttask %s, Thread Signature %s".formatted(item,Thread.currentThread()));
+                    System.out.printf("\ttask %s, Thread Signature %s\n", item, Thread.currentThread());
                 });
             });
         }

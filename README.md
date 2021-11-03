@@ -14,6 +14,13 @@ recreational programming.
 
 If you want to contribute, I will discuss this later...
 
+Finally, while this laboratory is based on Project Loom, my expectation is that anything you can do via
+Loom Virtual Threads, you can **semantically** do using conventional Platform Threads, but because
+Virtual Threads are more efficient, you can use ***many*** more of them than you would ever consider
+with Platform Threads, and thereby adopt new programming styles that were not pragmatic before. *The
+bottom line is, that with Platform Threads, you cannot **pragmatically** do the same things you can with
+Virtual Threads.*
+
 # Getting Started
 
 This is the part I hate the most in learning anything new as too often on-boarding is unnecessarily
@@ -31,6 +38,13 @@ Consequently, the `.idea` folder exists in the git repo to help others get start
 
 🤔   If this makes things difficult or confusing for others, please let me know as I have some
 ideas on how to structure things better.
+
+One nice feature of the IntelliJ IDEA is that you can display formatted `javadoc` in the editor.
+As this project is a learning resource, there is an abundance of javadoc to explain things, and IntelliJ
+makes this a very effective way to read and explore without having to explicitly generate the `javadoc`.
+You can toggle between 
+
+![Code Documentation](IntelliJ Code Documentation.png?raw=true "IntelliJ Code Documentation")
 
 ## Getting Loom Binaries
 
