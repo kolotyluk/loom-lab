@@ -42,9 +42,9 @@ ideas on how to structure things better.
 One nice feature of the IntelliJ IDEA is that you can display formatted `javadoc` in the editor.
 As this project is a learning resource, there is an abundance of javadoc to explain things, and IntelliJ
 makes this a very effective way to read and explore without having to explicitly generate the `javadoc`.
-You can toggle between 
+You can toggle between edit and preview mode using the little control, circled in yellow.
 
-![Code Documentation](IntelliJ Code Documentation.png)
+![Code Documentation](IntelliJ-Code-Documentation.png)
 
 ## Getting Loom Binaries
 
