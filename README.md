@@ -44,7 +44,7 @@ As this project is a learning resource, there is an abundance of javadoc to expl
 makes this a very effective way to read and explore without having to explicitly generate the `javadoc`.
 You can toggle between 
 
-![Code Documentation](IntelliJ Code Documentation.png?raw=true "IntelliJ Code Documentation")
+![Code Documentation](IntelliJ Code Documentation.png)
 
 ## Getting Loom Binaries
 
