@@ -128,45 +128,44 @@ of that learning.
 — [Wikipedia](https://en.wikipedia.org/wiki/Structured_concurrency) 2021-10-28
 
 In Akka it was possible to set up a hierarchy of Actors to support a philosophy of *'let it fail.'*
-While this was a Structured Concurrency mechanism, it was truly difficult to set up, and wrap your
-mind around what was going on. In Project Loom you can write something like
+While this was a Structured Concurrency mechanism, it could be truly difficult to set up, and wrap your
+mind around what was going on. This could also be true in Project Loom, and I hope to explore this later,
+but for now, in Project Loom you can write something like
 
-    // Parent Thread
-    try (var executorService = Executors.newVirtualThreadExecutor()) {   // Open a Concurrency Context
-        IntStream.range(0, 15).forEach(i -> {
-            System.out.println("i = " + i + ", Thread ID = " + Thread.currentThread());
-            executorService.submit(() -> {   // Child Thread
-                System.out.println("Thread ID = " + Thread.currentThread());
-            });
+    // Parent Thread, Create a Concurrency Context
+    try (var executorService = Executors.newThreadPerTaskExecutor(virtualThreadFactory)) {
+        IntStream.range(0, 15).forEach(item -> {
+            System.out.printf("item %s, Thread Signature %s\n", item, Thread.currentThread());
+            executorService.submit(() -> { // Child Thread
+                System.out.printf("\ttask %s, Thread Signature %s\n", item, Thread.currentThread());
+            })
         });
-    }   // Close Concurrency Context
+    } // Close Concurrency Context
 
 where the parent thread, spawns a number of child threads, such that parent thread waits at the end
-of the `try` block for the child thread to complete, or 'join' back with the parent in terms of
+of the `try` block/wait for the child thread to complete, to 'join' back with the parent in terms of
 concurrency.
 
-    i = 0, Thread ID = Thread[#1,main,5,main]
-    i = 1, Thread ID = Thread[#1,main,5,main]
-    i = 2, Thread ID = Thread[#1,main,5,main]
-    i = 3, Thread ID = Thread[#1,main,5,main]
-    i = 4, Thread ID = Thread[#1,main,5,main]
-    i = 5, Thread ID = Thread[#1,main,5,main]
-    i = 6, Thread ID = Thread[#1,main,5,main]
-    Thread ID = VirtualThread[#28]/runnable@ForkJoinPool-1-worker-2
-    Thread ID = VirtualThread[#29]/runnable@ForkJoinPool-1-worker-3
-    Thread ID = VirtualThread[#27]/runnable@ForkJoinPool-1-worker-1
-    i = 7, Thread ID = Thread[#1,main,5,main]
+    item 2, Thread Signature Thread[#1,main,5,main]
+    item 3, Thread Signature Thread[#1,main,5,main]
+    item 4, Thread Signature Thread[#1,main,5,main]
+    item 5, Thread Signature Thread[#1,main,5,main]
+        task 1, Thread Signature VirtualThread[#33]/runnable@ForkJoinPool-1-worker-2
+        task 0, Thread Signature VirtualThread[#31]/runnable@ForkJoinPool-1-worker-9
+    item 6, Thread Signature Thread[#1,main,5,main]
+        task 2, Thread Signature VirtualThread[#34]/runnable@ForkJoinPool-1-worker-12
+        task 3, Thread Signature VirtualThread[#36]/runnable@ForkJoinPool-1-worker-9
 
 where
 
 - `Thread[#1,main,5,main]` is our parent thread, the main startup thread
-- `VirtualThread[#28]` is one of the child threads
-- `runnable@ForkJoinPool-1-worker-2` is the Carrier Thread that Virtual Thread `#28` is running on.
+- `VirtualThread[#33]` is one of the child threads
+- `runnable@ForkJoinPool-1-worker-2` is the Carrier Thread that Virtual Thread `#33` is running on.
 
 Each time you run this code, the output will be ordered differently because the order is
 nondeterministic, because concurrency itself is generally nondeterministic.
 
-If at some point in the code you did something like
+At some point in the code you could do something like
 
     executorService.shutdown();
 
@@ -179,7 +178,7 @@ which is documented as
 
 or you could do
 
-    executorService.shutdown();
+    executorService.shutdownNow();
     
 > Attempts to stop all actively executing tasks, halts the processing of waiting tasks,
 > and returns a list of the tasks that were awaiting execution. This method does not wait
@@ -196,6 +195,8 @@ when you get to the end of the `try` block, `close()` is called, which basically
 `executorService.shutdown()` and then `awaitTermination()` thereby cleaning up the context.
 
 ## Exceptions
+
+TODO - this is not correct...
 
 From the previous example, if one of the child threads throws and exception that is not caught
 in the try-with-resources block, then this will implicitly do a `shutdownAll` because if things
