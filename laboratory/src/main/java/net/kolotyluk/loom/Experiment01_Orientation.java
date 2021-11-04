@@ -60,7 +60,7 @@ import java.util.stream.IntStream;
  * @see <a href="https://www.youtube.com/watch?v=Nb85yJ1fPXM">Java ExecutorService - Part 1</a>
  * @author eric@kolotyluk.net
  */
-public class Experiment01 {
+public class Experiment01_Orientation {
 
     public static void main(String ... args){
         System.out.println("Fiber Fun - Experiment 1");

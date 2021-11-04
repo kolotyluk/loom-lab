@@ -7,8 +7,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="old-school" />
+        <module name="laboratory" />
+        <module name="benchmarks" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="17" />
   </component>
 </project>

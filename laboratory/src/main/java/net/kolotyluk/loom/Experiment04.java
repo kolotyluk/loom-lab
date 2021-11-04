@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  * @see <a href="https://wiki.openjdk.java.net/display/loom/Getting+started">Loom Getting Started</a>
  * @see <a href="https://www.youtube.com/watch?v=Nb85yJ1fPXM">Java ExecutorService - Part 1</a>
  */
-public class Experiment03 {
+public class Experiment04 {
 
     public static void main(String args[]){
         System.out.println("Fiber Fun - Experiment 3");

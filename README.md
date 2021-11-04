@@ -19,7 +19,13 @@ Loom Virtual Threads, you can **semantically** do using conventional Platform Th
 Virtual Threads are more efficient, you can use ***many*** more of them than you would ever consider
 with Platform Threads, and thereby adopt new programming styles that were not pragmatic before. *The
 bottom line is, that with Platform Threads, you cannot **pragmatically** do the same things you can with
-Virtual Threads.*
+Virtual Threads.* See also
+[Ron Pressler - Loom: Bringing Lightweight Threads and Delimited Continuations to the JVM](https://www.youtube.com/watch?v=r6P0_FDr53Q)
+for more theoretical grounding.
+
+## See Also
+
+- [Videos](VIDEOS.md)
 
 # Getting Started
 
@@ -295,7 +301,7 @@ but requires the special *Black Magic* function extension of
 
     fun ExecutorService.use(block: (executorService: ExecutorService) -> Unit) = block(this)
 
-In this project, I keep this in `net.kolotyluk.loom.LoomUtilities` as
+In this project, I keep this in `LoomUtilities` as
 
     package net.kolotyluk.loom
     import java.util.concurrent.ExecutorService
@@ -305,5 +311,5 @@ In this project, I keep this in `net.kolotyluk.loom.LoomUtilities` as
 
 so other files can use
 
-    import net.kolotyluk.loom.LoomUtilities.use
+    import LoomUtilities.use
 
