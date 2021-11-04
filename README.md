@@ -120,6 +120,36 @@ of that learning.
 
 # Lessons Learned
 
+## Abstraction
+
+- Parallel Streams is a high form of abstraction
+  - But requires tasks that are Independent and Associative
+  - Independent in that they do not need coordination
+  - Associative in that the order of work is not important
+
+## Concurrency vs Parallelism
+
+From [Parallel Streams, CompletableFuture, and All That: Concurrency in Java 8](https://www.youtube.com/watch?v=x5akmCWgGY0)
+
+### Concurrency
+
+- Multiple tasks can run at the same time
+- You design for concurrency
+
+### Parallelism
+
+- Tasks actually run simultaneously
+
+
+> "Parallelism is strictly an optimization" — Brian Goetz
+
+### Conclusions
+
+
+- Concurrency is a capability, while parallelism is a performance optimization that requires concurrency
+- Best to test without parallelism first to make sure the logic is correct
+  - invoking parallelism can introduce problems
+
 ## Structured Concurrency
 
 > Structured concurrency is a programming paradigm aimed at improving the clarity, quality,
