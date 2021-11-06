@@ -84,3 +84,39 @@ futures1 time = 4834
 futures2 time = 4372
 
 Process finished with exit code 0
+
+---
+
+"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=57147:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_Primes
+Hello Primes
+PID = 23484
+CPU Cores = 12
+
+serialPrimes: primes found = 664578
+parallelPrimes: primes found = 664578
+virtualPrimes: primes found = 664578
+futurePrimes1: primes found = 664578
+futurePrimes2: primes found = 664578
+serial   time = 7574
+parallel time = 1380
+virtual  time = 1583
+futures1 time = 6212
+futures2 time = 4015
+
+Transactional
+
+serialPrimes2: primes found = 1228
+parallelPrimes2: primes found = 1228
+virtualPrimes2: primes found = 1228
+futurePrimes12: primes found = 1228
+futurePrimes22: primes found = 1228
+serial   time = 102002
+parallel time = 40333
+virtual  time = 40381
+futures1 time = 2545
+futures2 time = 1273
+
+Process finished with exit code 0
+
+--- 
+

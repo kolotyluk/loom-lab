@@ -17,6 +17,6 @@
 
     <packaging>pom</packaging>
 
-    <name>net.kolotyluk.loom loom-lab</name>
+    <name>loom-lab</name>
 
 </project>
