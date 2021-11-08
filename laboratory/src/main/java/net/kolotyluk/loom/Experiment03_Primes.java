@@ -2,6 +2,7 @@ package net.kolotyluk.loom;
 
 import javax.swing.text.html.Option;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.function.BinaryOperator;
@@ -26,7 +27,6 @@ import java.util.stream.Stream;
  *     shoulders of giants</em>. Generally, for CPU Bound use cases, the {@link java.util.stream.Stream} Interface
  *     is a good place to start as it has been specifically design for such use cases.
  * </p>
- * <hr>
  * <h2>Streams</h2>
  * <p>
  *     The Streams Architecture has three important phases
@@ -58,7 +58,6 @@ import java.util.stream.Stream;
  *     does not really buy us much. This is because the overhead of Concurrent Operation can easily overwhelm
  *     any benefits of parallelism.
  * </p>
- * <hr>
  * <h2>Threads</h2>
  * <p>
  *     For the rest of the experiments, we can conclude that that attempts to use Threads to do better than basic
@@ -72,18 +71,10 @@ import java.util.stream.Stream;
  * </p>
  * <p>
  *     For these experiments we warp our primes experiments into a pseudo networking application, where we simulate
- *     farming isPrime() out to HTTP Endpoints. This simulation basically wraps the
+ *     farming <tt>isPrime()</tt> out to HTTP Endpoints. This simulation basically wraps the
  *     {@link Experiment03_Primes#isPrime(long, long, long)} calculation with network latency via
  *     {@link Thread#sleep(long)}, one to simulate Request Latency, another to simulate Response
  *     Latency.
- * </p>
- * <p>
- *     <strong><em>As we will see, using Virtual Threads over Platform Threads gives us about 20 times the
- *     throughput in operations</em></strong> (for this specific use case). This throughput, however, is not
- *     measured explicitly, but inferred because Platform Threads takes about 20 times longer than Virtual
- *     Threads to check the same number of primes. This might be a bit like comparing oranges to grapefruit,
- *     but they're both citrus.
- * TODO - devise better throughput experiments
  * </p>
  * <p>
  *     The spirit of the experiments here is that we might have some application that is computationally expensive and
@@ -96,14 +87,177 @@ import java.util.stream.Stream;
  *     style, we might use something like <a href="https://en.wikipedia.org/wiki/Apache_Spark">Apache Spark</a>,
  *     but here we are trying to keep things simple, and make a point, not a perfect application.
  * </p>
+ * <h1>Benchmarking</h1>
+ * <p>
+ *     When trying to compare the performance of different Concurrent and Parallel approaches, it's important to
+ *     conduct <a href="https://en.wikipedia.org/wiki/Benchmark_(computing)">benchmarks</a>, and one tool to use is
+ *     the <a href="https://github.com/openjdk/jmh">Java Microbenchmark Harness (JMH)</a>. However, it can take quite
+ *     a long time for JMH to run benchmarks. By default, JMH runs 25 warmups, and 25 benchmarks, then averages the
+ *     results. For quicker results, the experiments in this code take a rather casual approach to get a feel for things,
+ *     leaving the heavy lifting to JMH.
+ * </p>
+ * <h2>Streams</h2>
+ * <p>
+ *     See <tt>benchmarks/PrimeNumbers</tt> for the code that runs these the JMH Benchmarks.
+ * </p>
+ * <pre>
+ * Benchmark                                  Mode  Cnt        Score        Error
+ * PrimeNumbers.parallelPrimesTo_1000         avgt   25       46.620 ±      1.549
+ * PrimeNumbers.parallelPrimesTo_10_000       avgt   25      379.036 ±      7.604
+ * PrimeNumbers.parallelPrimesTo_10_000_000   avgt   25  1360362.823 ±  14723.084
+ * PrimeNumbers.serialPrimesTo_1000           avgt   25       32.998 ±      0.315
+ * PrimeNumbers.serialPrimesTo_10_000         avgt   25      644.467 ±     16.160
+ * PrimeNumbers.serialPrimesTo_10_000_000     avgt   25  8199848.272 ±  84514.067
+ * </pre>
+ * <p>
+ *     where the <tt>Score</tt> is the Average Microseconds (μS) to complete the run. Given we only test odd numbers
+ *     we can conclude from testing numbers if they are prime, where throughput = tests per μS
+ * </p>
+ * <pre>
+ * Benchmark                                     tested  throughput  ratio
+ * PrimeNumbers.parallelPrimesTo_1000               500      10.725  0.708
+ * PrimeNumbers.parallelPrimesTo_10_000           5,000      13.191  1.700
+ * PrimeNumbers.parallelPrimesTo_10_000_000   5,000,000       3.675  6.025
+ * PrimeNumbers.serialPrimesTo_1000                 500      15.152  1.413
+ * PrimeNumbers.serialPrimesTo_10_000             5,000       7.758  0.588
+ * PrimeNumbers.serialPrimesTo_10_000_000     5,000,000       0.610  0.166
+ * </pre>
+ * <p>
+ *     From this we can conclude
+ * </p>
+ * <nl>
+ *     <li>
+ *         For smaller numbers of computations, O(1,000), Serial Stream has more throughput than Parallel Stream.
+ *         This is because, Parallel Stream requires Concurrency, and Concurrency has overhead.
+ *     </li>
+ *     <li>
+ *         For larger numbers of computations, O(10,000), Parallel Stream has more throughput than Serial Stream.
+ *         This is because the power of parallelism overcomes the overhead of concurrency.
+ *     </li>
+ *     <li>
+ *         For really large numbers of computations, O(10,000,000), Parallel Stream really shines over Serial Stream.
+ *         In this use case, it is computationally more expensive to test large numbers if they are prime, so the
+ *         dominant factor is raw CPU, and in this case, computation has been spread across 12 CPUs.
+ *     </li>
+ *     <li>
+ *         For O(10,000,000) computations we can see the throughput of Parallel Streams is much lower than O(10,000),
+ *         but still much better than O(10,000,000) Serial Stream, so the throughput sweet spot for Parallel Stream
+ *         in this use case is somewhere between O(10,000) and O(10,000,000). This is explained because it takes longer to test
+ *         larger numbers if they are prime, therefore throughput will begin decreasing. This is why it's important
+ *         to benchmark <em>real</em> applications, and not synthetic experiments. As we will see later, however,
+ *         synthetic experiments do have their place.
+ *     </li>
+ * </nl>
+ * <p>
+ *     As an aside, computing primes up to
+ *     <ul>
+ *         <li>1,000, there are 167 primes</li>
+ *         <li>10,000, there are 1228 primes</li>
+ *         <li>10,000,000 there are 664578 primes</li>
+ *     </ul>
+ * </p>
+ * <h2>Project Loom</h2>
+ * <h3>Pure Computation</h3>
+ * <p>
+ *     When I first started playing with these experiments I naïvely thought that using Project Loom could improve
+ *     upon the previous benchmarks. Even though I had already watched
+ *     <a href="https://www.youtube.com/watch?v=r6P0_FDr53Q">Ron Pressler - Loom: Bringing Lightweight Threads and Delimited Continuations to the JVM</a>,
+ *     I had not really appreciated or internalized that knowledge. But, by naïvely concocting my own experiments,
+ *     I had empirical evidence that supported what Ron Pressler had already stated.
+ * </p>
+ * <p>
+ *     Without using JMH, playing around here I discovered
+ *     <nl>
+ *         <li>
+ *             Running {@link Stream#parallel()} within a VirtualThread ExecutorService context did not improve
+ *             throughput. In most cases it was a little worse.
+ *         </li>
+ *         <li>
+ *             Replacing <tt>Stream.parallel()</tt> with a VirtualThread ExecutorService that calls
+ *             {@link ExecutorService#invokeAll(Collection)} has about 1/3 the throughput of <tt>Stream.parallel()</tt>
+ *             for testing up to 10,000,000 primes.
+ *         </li>
+ *         <li>
+ *             Replacing <tt>Stream.parallel()</tt> with a VirtualThread ExecutorService that calls
+ *             {@link ExecutorService#submit(Callable)} has about 1/2 the throughput of <tt>Stream.parallel()</tt>,
+ *             which is better than <tt>ExecutorService#.invokeAll(Collection)</tt>
+ *         </li>
+ *         <li>
+ *             Comparing Parallel Streams to Virtual Threads is sort of like comparing oranges to grapefruit,
+ *             but in a sense they are both citrus. However, comparing <tt>ExecutorService#.invokeAll(Collection)</tt>
+ *             to <tt>ExecutorService.submit(Callable)</tt> is more like comparing navel oranges to mandarin oranges.
+ *             While <tt>ExecutorService#.invokeAll(Collection)</tt> looks more attractive, it might not perform as
+ *             well as we would expect. <em>This is still a naïve test, so it should be invested further with more
+ *             rigour and analysis.</em>
+ *         </li>
+ *     </nl>
+ * </p>
+ * <h3>Simulated Networking</h3>
+ * <p>
+ *     The bottom line is, that for raw computation, stick with the Java Streams API, and Parallel Streams. However, how
+ *     does Project Loom compare when simulating a Network Application, where we might be farming prime computations
+ *     out to some HTTP Endpoint?
+ * </p>
+ * <p>
+ *      Using the same {@link Experiment03_Primes#isPrime(long, long, long)} code as the previous benchmarks,
+ *      where we use <tt>isPrime(candiate, minimumLag, maximumLag)</tt> with <tt>minimumLag = 10</tt> ms and
+ *      <tt>maximumLag = 30</tt> ms, times 2, or a total of 20 ms minimum and 60 ms maximum, where the actual
+ *      lag is random; we simulate some network blocking overhead by using {@link Thread#sleep(long)} before the prime
+ *      test and after the prime test to simulate the HTTP Request overhead and the HTTP Response overhead. More
+ *      importantly, these two <tt>sleep()</tt> requests give the Thread schedulers a chance to let other tasks run.
+ *      Implicitly, there is the actual lag of the isPrime(candidate) computation itself, which leads me to believe
+ *      that this is actually a pretty good simulation.
+ * </p>
+ * <pre>
+ *
+ * Benchmark                                 Mode  Cnt           Score
+ * PrimeThreads.platformPrimesTo_1000        avgt   25      131.536 ±     2.860
+ * PrimeThreads.platformPrimesTo_10_000      avgt   25     1132.570 ±    88.749
+ * PrimeThreads.platformPrimesTo_10_000_000  avgt   25  113223.0013 ± 95938.331
+ * PrimeThreads.virtualPrimesTo_1000         avgt   25       32.998 ±     9.349
+ * PrimeThreads.virtualPrimesTo_10_000       avgt   25       58.174 ±     0.742
+ * PrimeThreads.virtualPrimesTo_10_000_000   avgt   25    34989.439 ±  1354.511
+ *
+ * Benchmark                                     tested  throughput   ratio
+ * PrimeThreads.platformPrimesTo_1000               500       3.801   0.251
+ * PrimeThreads.platformPrimesTo_10_000           5,000       4.415   0.051
+ * PrimeThreads.platformPrimesTo_10_000_000   5,000,000       4.416   0.031
+ * PrimeThreads.virtualPrimesTo_1000                500      15.152   3.986
+ * PrimeThreads.virtualPrimesTo_10_000            5,000      85.947  19.467
+ * PrimeThreads.virtualPrimesTo_10_000_000    5,000,000     142.900  32.360
+ * </pre>
+ * <p>
+ *     Based on the JMH results (after a time of 16:20:35), where we are using units of Milliseconds,
+ *     <nl>
+ *         <li>
+ *             I am really surprised I was able to have 5,000,000 Platform Threads running, but it took an incredibly
+ *             long time
+ *         </li>
+ *         <li>
+ *             On a scale of 5,000,000 threads, Virtual Threads have 32 times the throughput of Platform Threads
+ *         </li>
+ *         <li>
+ *             Given how long my system was running with fans at full, I think Project Loom deserves bragging rights
+ *             that it also can save energy. It would be interesting to run this benchmark again with my power meter
+ *             to see how many Joules was consumed by each benchmark.
+ *         </li>
+ *     </nl>
+ * </p>
+ * <p>
+ *     Many thanks to Ron Pressler who responded to my email regarding benchmarking Project Loom, and patiently
+ *     clarified my thinking on how to benchmark, and more importantly how to interprest and explain benchmarks.
+ * </p>
+ * <hr>
  * @see <a href="https://www.youtube.com/watch?v=NsDE7E8sIdQ">From Concurrent to Parallel</a>
  * @see <a href="https://www.youtube.com/watch?v=fOEPEXTpbJA">Project Loom: Modern Scalable Concurrency for the Java Platform</a>
  * @see <a href="https://stackoverflow.com/questions/69832291/will-project-loom-virtual-threads-improve-the-perfomance-of-parallel-streams">Will Project Loom Virtual Threads improve the perfomance of parallel Streams?</a>
+ * @see <a href="https://github.com/openjdk/jmh">Java Microbenchmark Harness (JMH)</a>
  * @author eric@kolotyluk.net
  */
 public class Experiment03_Primes {
     static final long count1 = 10_000_000;
     static final long count2 = 10_000;
+    static final long count3 = 1000;
 
     static final ThreadFactory platformThreadFactory = Thread.ofPlatform().factory();
     static final ThreadFactory virtualThreadFactory = Thread.ofVirtual().factory();
@@ -117,7 +271,7 @@ public class Experiment03_Primes {
 
         var time1 = System.currentTimeMillis();
 
-        serialPrimes(count1);
+        serialPrimes(1000);
 
         var time2 = System.currentTimeMillis();
 
@@ -187,7 +341,7 @@ public class Experiment03_Primes {
         var primes = LongStream.iterate(3, x -> x < limit, x -> x + 2)
                 .filter(candidate -> isPrime(candidate, 10, 30)).toArray();
 
-        System.out.println("serialPrimes2: primes found = " + primes.length);
+        // System.out.println("serialPrimes2: primes found = " + primes.length);
         return primes;
     }
 
@@ -196,7 +350,7 @@ public class Experiment03_Primes {
                 .parallel()
                 .filter(candidate -> isPrime(candidate, 0, 0)).toArray();
 
-        System.out.println("parallelPrimes: primes found = " + primes.length);
+        //System.out.println("parallelPrimes: primes found = " + primes.length);
     }
 
     public static void parallelPrimes2(long limit) {
@@ -204,7 +358,7 @@ public class Experiment03_Primes {
                 .parallel()
                 .filter(candidate -> isPrime(candidate, 10, 30)).toArray();
 
-        System.out.println("parallelPrimes2: primes found = " + primes.length);
+        // System.out.println("parallelPrimes2: primes found = " + primes.length);
     }
 
     public static void virtualPrimes(long limit, ThreadFactory threadFactory) {
@@ -216,7 +370,7 @@ public class Experiment03_Primes {
                             .filter(candidate -> isPrime(candidate, 0, 0)).toArray()
             ).get();
 
-            System.out.println("virtualPrimes: primes found = " + primes.length);
+            //System.out.println("virtualPrimes: primes found = " + primes.length);
 
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -234,7 +388,7 @@ public class Experiment03_Primes {
                             .filter(candidate -> isPrime(candidate, 10, 30)).toArray()
             ).get();
 
-            System.out.println("virtualPrimes2: primes found = " + primes.length);
+            //System.out.println("virtualPrimes2: primes found = " + primes.length);
 
 
         } catch (ExecutionException e) {
@@ -268,7 +422,7 @@ public class Experiment03_Primes {
                 return null;
             });
 
-            System.out.println("futurePrimes1: primes found = " + flat.count());
+            //System.out.println("futurePrimes1: primes found = " + flat.count());
 
 
         } catch (InterruptedException e) {
@@ -301,7 +455,7 @@ public class Experiment03_Primes {
                 return null;
             });
 
-            System.out.println("futurePrimes12: primes found = " + flat.count());
+            //System.out.println("futurePrimes12: primes found = " + flat.count());
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -326,7 +480,7 @@ public class Experiment03_Primes {
                 return false;
             });
 
-            System.out.println("futurePrimes2: primes found = " + result.count());
+            //System.out.println("futurePrimes2: primes found = " + result.count());
 
             // executorService.shutdown();
             // executorService.awaitTermination(100, TimeUnit.SECONDS);
@@ -334,7 +488,7 @@ public class Experiment03_Primes {
     }
 
     public static void futurePrimes22(long limit, ThreadFactory threadFactory) {
-        try (var executorService = Executors.newThreadPerTaskExecutor(virtualThreadFactory)) {
+        try (var executorService = Executors.newThreadPerTaskExecutor(threadFactory)) {
             var tasks = LongStream.iterate(3, x -> x < limit, x -> x + 2)
                     .mapToObj(candidate -> {
                         return executorService.submit(() -> isPrime(candidate, 10, 30) ? candidate : null);
@@ -352,7 +506,7 @@ public class Experiment03_Primes {
                 return false;
             });
 
-            System.out.println("futurePrimes2: primes found = " + result.count());
+            //System.out.println("futurePrimes2: primes found = " + result.count());
 
             // executorService.shutdown();
             // executorService.awaitTermination(100, TimeUnit.SECONDS);
