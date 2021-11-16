@@ -1,6 +1,6 @@
 
 
-"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=51064:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_Primes
+"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=51064:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_PrimeStreams
 Hello Primes
 PID = 15520
 serial   time = 14679
@@ -13,7 +13,7 @@ Process finished with exit code 0
 
 ---
 
-"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=51165:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_Primes
+"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=51165:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_PrimeStreams
 Hello Primes
 PID = 21508
 serial   time = 14726
@@ -26,7 +26,7 @@ Process finished with exit code 0
 
 ---
 
-"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=51195:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_Primes
+"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=51195:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_PrimeStreams
 Hello Primes
 PID = 7328
 CPU Cores = 12
@@ -43,7 +43,7 @@ Process finished with exit code 0
 Wiithout spin
 ---
 
-"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=51316:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_Primes
+"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=51316:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_PrimeStreams
 Hello Primes
 PID = 276
 CPU Cores = 12
@@ -57,7 +57,7 @@ futures2 time = 4382
 Process finished with exit code 0
 
 ---
-"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=64005:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_Primes
+"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=64005:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_PrimeStreams
 Hello Primes
 PID = 4776
 CPU Cores = 12
@@ -72,7 +72,7 @@ Process finished with exit code 0
 
 ---
 
-"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=64052:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_Primes
+"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=64052:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_PrimeStreams
 Hello Primes
 PID = 1992
 CPU Cores = 12
@@ -87,7 +87,7 @@ Process finished with exit code 0
 
 ---
 
-"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=57147:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_Primes
+"C:\Program Files (Open)\jdk-18\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\lib\idea_rt.jar=57147:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.3\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\ERIC\Documents\git\loom-lab\laboratory\target\classes;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.0-RC\kotlin-stdlib-1.6.0-RC.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\ERIC\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.6.0-RC\kotlin-stdlib-common-1.6.0-RC.jar net.kolotyluk.loom.Experiment03_PrimeStreams
 Hello Primes
 PID = 23484
 CPU Cores = 12

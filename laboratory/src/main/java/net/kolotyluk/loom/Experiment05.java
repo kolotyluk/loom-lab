@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  * @see <a href="https://wiki.openjdk.java.net/display/loom/Getting+started">Loom Getting Started</a>
  * @see <a href="https://www.youtube.com/watch?v=Nb85yJ1fPXM">Java ExecutorService - Part 1</a>
  */
-public class Experiment04 {
+public class Experiment05 {
 
     public static void main(String args[]){
         System.out.println("Fiber Fun - Experiment 3");
@@ -196,39 +196,39 @@ public class Experiment04 {
         }
 
 
-        try (var executorService = Executors.newThreadPerTaskExecutor(virtualThreadFactory)) {
-
-            // Submits a value-returning task and waits for the result
-            var future = executorService.submit(() -> "foo");
-
-            var result = future.join();
-            System.out.println("Future result = " + result);
-
-            // Submits two value-returning tasks to get a Stream that is lazily populated
-            // with completed Future objects as the tasks complete
-            Stream<Future<String>> stream = executorService.submit(List.of(() -> "foo", () -> "bar"));
-            stream.filter(Future::isCompletedNormally)
-                    .map(Future::join)
-                    .forEach(System.out::println);
-
-            // Executes two value-returning tasks, waiting for both to complete
-            List<Future<String>> results1 = executorService.invokeAll(List.of(() -> "foo", () -> "bar"));
-
-            // Executes two value-returning tasks, waiting for both to complete. If one of the
-            // tasks completes with an exception, the other is cancelled.
-            List<Future<String>> results2 = executorService.invokeAll(List.of(() -> "foo", () -> "bar"), /*waitAll*/ false);
-
-            // Executes two value-returning tasks, returning the result of the first to
-            // complete, cancelling the other.
-            String first = executorService.invokeAny(List.of(() -> "foo", () -> "bar"));
-
-        } catch (ExecutionException e) {
-
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-
-            e.printStackTrace();
-        }
+//        try (var executorService = Executors.newThreadPerTaskExecutor(virtualThreadFactory)) {
+//
+//            // Submits a value-returning task and waits for the result
+//            var future = executorService.submit(() -> "foo");
+//
+//            var result = future.join();
+//            System.out.println("Future result = " + result);
+//
+//            // Submits two value-returning tasks to get a Stream that is lazily populated
+//            // with completed Future objects as the tasks complete
+//            Stream<Future<String>> stream = executorService.submit(List.of(() -> "foo", () -> "bar"));
+//            stream.filter(Future::isCompletedNormally)
+//                    .map(Future::join)
+//                    .forEach(System.out::println);
+//
+//            // Executes two value-returning tasks, waiting for both to complete
+//            List<Future<String>> results1 = executorService.invokeAll(List.of(() -> "foo", () -> "bar"));
+//
+//            // Executes two value-returning tasks, waiting for both to complete. If one of the
+//            // tasks completes with an exception, the other is cancelled.
+//            List<Future<String>> results2 = executorService.invokeAll(List.of(() -> "foo", () -> "bar"), /*waitAll*/ false);
+//
+//            // Executes two value-returning tasks, returning the result of the first to
+//            // complete, cancelling the other.
+//            String first = executorService.invokeAny(List.of(() -> "foo", () -> "bar"));
+//
+//        } catch (ExecutionException e) {
+//
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//
+//            e.printStackTrace();
+//        }
 
 
         var deadline = Instant.now().plusSeconds(2);

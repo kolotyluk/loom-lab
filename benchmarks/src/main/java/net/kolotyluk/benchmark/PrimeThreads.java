@@ -1,6 +1,6 @@
 package net.kolotyluk.benchmark;
 
-import net.kolotyluk.loom.Experiment03_Primes;
+import net.kolotyluk.loom.Experiment03_PrimeStreams;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -36,6 +36,23 @@ import java.util.concurrent.TimeUnit;
  * $ mvn clean install
  * $ java -jar target/benchmarks.jar PrimeNumbers
  * </pre>
+ * <pre>
+ * Benchmark                                 Mode  Cnt        Score        Error
+ * PrimeThreads.platformPrimesTo_1000        avgt   25      122.004 ±      4.888
+ * PrimeThreads.platformPrimesTo_10_000      avgt   25      986.577 ±     55.197
+ * PrimeThreads.platformPrimesTo_10_000_000  avgt   25  1043651.917 ± 139003.151
+ * PrimeThreads.virtualPrimesTo_1000         avgt   25       33.420 ±      1.142
+ * PrimeThreads.virtualPrimesTo_10_000       avgt   25       53.476 ±      0.610
+ * PrimeThreads.virtualPrimesTo_10_000_000   avgt   25    33058.254 ±   1171.181
+ *
+ * Benchmark                                     tested  throughput   ratio
+ * PrimeThreads.platformPrimesTo_1000               500       4.098   0.274
+ * PrimeThreads.platformPrimesTo_10_000           5,000       5.068   0.054
+ * PrimeThreads.platformPrimesTo_10_000_000   5,000,000       4.791   0.032
+ * PrimeThreads.virtualPrimesTo_1000                500      14.961   3.651
+ * PrimeThreads.virtualPrimesTo_10_000            5,000      93.500  18.449
+ * PrimeThreads.virtualPrimesTo_10_000_000    5,000,000     151.248  31.569
+ * </pre>
  */
 public class PrimeThreads {
 
@@ -55,45 +72,45 @@ public class PrimeThreads {
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void virtualPrimesTo_1000() {
-        Experiment03_Primes.futurePrimes22(1_000, virtualThreadFactory);
+        Experiment03_PrimeStreams.futurePrimes22(1_000, virtualThreadFactory);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void virtualPrimesTo_10_000() {
-        Experiment03_Primes.futurePrimes22(10_000, virtualThreadFactory);
+        Experiment03_PrimeStreams.futurePrimes22(10_000, virtualThreadFactory);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void virtualPrimesTo_10_000_000() {
-        Experiment03_Primes.futurePrimes22(10_000_000, virtualThreadFactory);
+        Experiment03_PrimeStreams.futurePrimes22(10_000_000, virtualThreadFactory);
     }
 
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void platformPrimesTo_1000() {
-        Experiment03_Primes.futurePrimes22(1_000, platformThreadFactory);
+        Experiment03_PrimeStreams.futurePrimes22(1_000, platformThreadFactory);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void platformPrimesTo_10_000() {
-        Experiment03_Primes.futurePrimes22(10_000, platformThreadFactory);
+        Experiment03_PrimeStreams.futurePrimes22(10_000, platformThreadFactory);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void platformPrimesTo_10_000_000() {
-        Experiment03_Primes.futurePrimes22(10_000_000, platformThreadFactory);
+        Experiment03_PrimeStreams.futurePrimes22(10_000_000, platformThreadFactory);
     }
 
 }
