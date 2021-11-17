@@ -63,9 +63,35 @@ import java.util.stream.Stream;
  *     complicated too...
  * </p>
  * <p>
- *     However, where threads really shine is when we are dealing with concurrency where there are a lot of blocking
+ *     However, where Threads really shine is when we are dealing with concurrency where there are a lot of blocking
  *     operations, such as transaction processing, network access, etc. Every blocking operation is an opportunity for
- *     some other task to run and progress.
+ *     some other task to run and progress. From the
+ *     <a href="https://bugs.openjdk.java.net/browse/JDK-8277129">Structured Concurrency JEP</a>
+ *     <blockquote>
+ *          Structured concurrency is a counterpart to parallel streams and (their underlying mechanism) ForkJoinPool.
+ *          Those are concerned with data-parallelism and computation, and ForkJoinPool also employs
+ *          "structured parallelism" where forks are followed by joins. But as concurrency focuses more on interaction
+ *          – through I/O and/or message passing – than pure data processing, structured concurrency places a special
+ *          emphasis on handling cancellation and partial failures, and its goal isn't just to assist in writing a
+ *          correct algorithm, but also to express the application's logical unit in a manner that is reflected both
+ *          in the code's structure as well as in runtime observation with various service tools.
+ *     </blockquote>
+ *     In particular, Parallel Streams are intended for simpler internal processing on hardware cores/threads,
+ *     but are not well suited for external processing, such as HTTP REST calls. For Distributed Parallel Computation,
+ *     {@link Flow} might be a better tool to use which is more similar to Parallel Streams, but this is a Reactive
+ *     design, and with Virtual Threads, there might be better solutions that don't add the complexity of Reactive
+ *     design. From
+ *     <a href="https://thepracticaldeveloper.com/reactive-programming-java-9-flow/">Reactive Programming with Java 9's Flow</a>
+ *     <blockquote>
+ *         Reactive Programming is not the new hype to replace Functional Programming. Both are compatible and work
+ *         perfectly together. While the Streams API introduced in Java 8 is perfect to process data streams
+ *         (map, reduce and all the variants), the Flow API shines on the communication side (request, slow down, drop,
+ *         block, etc.). You can use Streams as data sources for Publisher, blocking them or dropping items as needed.
+ *         You can also use them on your Subscriber’s side, for example, to perform aggregations after receiving some
+ *         items. Not to mention all the rest of programming logic in which reactive streams doesn’t fit but yet it can
+ *         be written in a functional style and be ten times more readable and easier to maintain than in imperative
+ *         programming.
+ *     </blockquote>
  * </p>
  * <p>
  *     For these experiments we warp our primes experiments into a pseudo networking application, where we simulate

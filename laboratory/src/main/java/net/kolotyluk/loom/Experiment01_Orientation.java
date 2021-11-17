@@ -1,17 +1,11 @@
 package net.kolotyluk.loom;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
 /**
- *  <h1>Experiment Suite 01</h1>
+ *  <h1>Experiment Suite 01 - Orientation</h1>
  *  <p>
- *      This suite of experiments is a quick way to jump into Project Loom, because we're here to
- *      'il-loom-inate' things 😉
- *  </p>
  *      We're going to start off by running two identical experiments, one with conventional Platform Threads
  *      and the other with Loom Virtual Threads, so we can compare the results. If you do something like
  *      <pre>
@@ -54,7 +48,6 @@ import java.util.stream.IntStream;
  *          <dt><tt>worker-1</tt></dt>
  *              <dd>is the Carrier Thread that the Virtual Thread is running on</dd>
  *     </dl>
-
  *  </p>
  * @see <a href="https://wiki.openjdk.java.net/display/loom/Getting+started">Loom Getting Started</a>
  * @see <a href="https://www.youtube.com/watch?v=Nb85yJ1fPXM">Java ExecutorService - Part 1</a>
@@ -107,20 +100,39 @@ public class Experiment01_Orientation {
     static void experiments(String title, ThreadFactory threadFactory) {
         System.out.printf("\n%s\n%n", title);
 
-        // This try block implicitly defines the context or scope for one level of Structured Concurrency
-        try (var executorService = Executors.newThreadPerTaskExecutor(threadFactory)) {
+        try (var executorService = StructuredExecutor.open("Experiment00", threadFactory)) {
             /* We start with the simple case of creating some Threads from an IntStream of items,
              * where we create a new task Thread for each item, printing out which threads we are
              * executing on. Note that the items are printed on the startup thread, the tasks are
              * printed on Worker Threads as spawned by the executorService.
              */
             IntStream.range(0, 15).forEach(item -> {
-                System.out.printf("item %s, Thread Signature %s\n", item, Thread.currentThread());
-                executorService.submit(() -> {
-                    System.out.printf("\ttask %s, Thread Signature %s\n", item, Thread.currentThread());
+                System.out.printf("item = %d, Thread ID = %s\n", item, Thread.currentThread());
+                executorService.fork(() -> {
+                    System.out.printf("\ttask = %d, Thread ID = %s\n", item, Thread.currentThread());
+                    return null;
                 });
             });
+            executorService.join();
         }
+        catch  (InterruptedException e) {
+            System.out.println("interrupted");
+        }
+
+//        // This try block implicitly defines the context or scope for one level of Structured Concurrency
+//        try (var executorService = Executors.newThreadPerTaskExecutor(threadFactory)) {
+//            /* We start with the simple case of creating some Threads from an IntStream of items,
+//             * where we create a new task Thread for each item, printing out which threads we are
+//             * executing on. Note that the items are printed on the startup thread, the tasks are
+//             * printed on Worker Threads as spawned by the executorService.
+//             */
+//            IntStream.range(0, 15).forEach(item -> {
+//                System.out.printf("item %s, Thread Signature %s\n", item, Thread.currentThread());
+//                executorService.submit(() -> {
+//                    System.out.printf("\ttask %s, Thread Signature %s\n", item, Thread.currentThread());
+//                });
+//            });
+//        }
     }
 
 }
