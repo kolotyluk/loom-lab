@@ -29,6 +29,7 @@ import java.util.stream.Stream;
  *     Where we just print some information on which thread the code is running on; the indented lines were spawned
  *     by the unindented lines. While this is a very simple experiment, we will look at many of the new Project Loom
  *     bells and whistles, using the best new practices, so that we are well grounded for further experiments.
+ *     <em>Feel free to ignore most of this for now, but remember it's here to get grounded again.</em>
  * </p>
  * <h1 style="padding-top: 16pt;">Virtual Threads</h1>
  * <p>
@@ -141,19 +142,71 @@ import java.util.stream.Stream;
  *     <dt>Task</dt>
  *     <dd>
  *         Typically a {@link Runnable} or {@link Callable} passed to an {@link ExecutorService} for concurrent
- *         execution. Tasks may be mapped 1:1 to Threads, or they may just executed sequentially by threads in a
+ *         execution, where the handle to a Task is a {@link Future}.
+ *         Tasks may be mapped 1:1 to Threads, or they may just be executed sequentially by threads in a
  *         Thread Pool, and that is determined by the implementation of the Executor. For example, in
  *         {@link ForkJoinPool} each Thread may execute many Tasks; when they complete one Task, they can
- *         execute the next scheduled Task.
+ *         execute the next scheduled Task. A task completes with a result, an exception, or it is cancelled.
+ *     </dd>
+ *     <dt>Completion</dt>
+ *     <dd>
+ *         When using the 2-arg fork method then the onComplete operation is invoked when the task completes,
+ *         irrespective of whether it completed with a result, exception, or was cancelled.
+ *         <ol>
+ *             <li>
+ *                 Success, with the value of the Callable.
+ *             </li>
+ *             <li>
+ *                 Failure, with an exception.
+ *             </li>
+ *             <li>
+ *                 Someone aborted, a subclass of Failure,
+ *             </li>
+ *             <li>
+ *                 Shutdown.
+ *             </li>
+ *         </ol>
+ *     </dd>
+ *     <dt>Completion Handlers</dt>
+ *     <dd>
+ *         Completion handlers allows us to factor out policies for the common and simple cases where we need to
+ *         collect results or shutdown the executor session based on the task’s success or failure. A call to shutdown
+ *         indicates that the computation is done — either successfully or unsuccessfully — and so there’s no point
+ *         in processing further results. In more complicated — and, we believe, much rarer — cases, like the connection
+ *         example in the javadoc, the completion handler is, indeed, insufficient, and we’d want to do cleanup
+ *         processing inside the task and possibly call shutdown directly.
  *     </dd>
  *     <dt>{@link Future}</dt>
  *     <dd>
- *         The object returned as a result of {@link StructuredExecutor#fork(Callable, BiConsumer)}.
+ *         The object returned as a result of {@link StructuredExecutor#fork(Callable, BiConsumer)}. Can be used to
+ *         interrogate the state of the running task, get the result, etc.
+ *     </dd>
+ *     <dt>Interrupt</dt>
+ *     <dd>Threads can be interrupted, invited to end prematurely, but they cannot be forced to end prematurely.</dd>
+ *     <dt>Cancel</dt>
+ *     <dd>
+ *         {@link Future#cancel(boolean)} is used to
+ *     </dd>
+ *     <dt>Shutdown</dt>
+ *     <dd>
+ *         <em>Shutdown is the concurrent execution analogue to a <tt>break</tt> statement in sequential loop.</em>
+ *         The {@link StructuredExecutor#shutdown()} method is for cases where we've got an interesting
+ *         result and we're no longer interested in the results of other tasks. The
+ *         shutdown method closes the front door to prevent new threads from
+ *         starting. It also interrupts the threads that are running the tasks that
+ *         haven't completed yet. It also tries to make it clear that when shutdown
+ *         completes that are tasks are "done" (it links to Future::isDone). You
+ *         shouldn't need to use Future::get with this API but if you were then you
+ *         should see that Future::get wakes up when SE::shutdown is called.
  *     </dd>
  * </dl>
 
  * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8277129">Structured Concurrency</a>
  * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8277131">Virtual Threads</a>
+ * @see <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/StructuredExecutor.html">Class StructuredExecutor</a>
+ * @see <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/StructuredExecutor.ShutdownOnFailure.html">Class StructuredExecutor.ShutdownOnFailure</a>
+ * @see <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/StructuredExecutor.ShutdownOnSuccess.html">Class StructuredExecutor.ShutdownOnSuccess</a>
+ * @see <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/lang/ScopeLocal.html">Class ScopeLocal</a>
  */
 public class Experiment00 {
 
