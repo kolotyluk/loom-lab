@@ -1,5 +1,7 @@
 package net.kolotyluk.loom;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.*;
@@ -115,6 +117,12 @@ public class Experiment02 {
 
         try (var executorService = Executors.newThreadPerTaskExecutor(threadFactory)) {
 
+            // var task = new FutureTask<void>(() -> System.out.println());
+
+            executorService.execute(() -> System.out.println());
+            var f = executorService.submit(() -> System.out.println());
+            var b = executorService.submit(() -> 2 * 3);
+
             /* spawn is a configurable laboratory where we can investigate the behaviour of tasks.
              * Starting with a very simple happy path experiment, let's just get the value of some task.
              */
@@ -165,6 +173,25 @@ public class Experiment02 {
 
             System.out.println("result = " + spawn(executorService, sleeper2,
                     (future) -> System.out.println("sleeper2 cancelled = " + future.cancel(true))));
+
+
+            Callable<String> sleeper3 = () -> {
+                Thread.sleep(Duration.ofSeconds(1));
+                Thread.sleep(Duration.ofSeconds(1));
+                Thread.sleep(Duration.ofSeconds(1));
+                Thread.sleep(Duration.ofSeconds(1));
+                return "sleeper 3";
+            };
+
+            System.out.println("result = " + spawn(executorService, sleeper3,
+                (future) -> {
+                    try {
+                        Thread.sleep(Duration.ofSeconds(1));
+                        System.out.println("sleeper3 cancelled = " + future.cancel(false));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }));
 
             /* When cancelling a future, it could be that the underlying task is not blocking on Thread.sleep()
              * or other blocking methods, it could just be computationally busy, so the task needs to explicitly
@@ -218,9 +245,21 @@ public class Experiment02 {
 
             System.out.println("result = " + spawn(executorService, malcontent, (future) -> {}));
 
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    class FooBar extends FutureTask {
+
+        public FooBar(@NotNull Callable callable) {
+            super(callable);
+        }
+
+
     }
 
 

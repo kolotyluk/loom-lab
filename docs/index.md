@@ -1,4 +1,4 @@
-# loom-lab Documentation
+# Core Documentation
 
 A place to learn about [Project Loom](https://openjdk.java.net/projects/loom) through hands-on
 experimentation and exploration.
@@ -6,6 +6,8 @@ experimentation and exploration.
 - [GitHub](https://github.com/kolotyluk/loom-lab)
 - [API Documentation](site/apidocs/index.html)
 - [Maven Site Documentation](site/index.html)
+- [Loom Advantages](advantages.md)
+- [Loom Lab Lexicon](lexicon.md)
 
 This is the main body of documentation for loom-lab.
 
@@ -19,6 +21,8 @@ I am happy to accept donations via
 [PayPal](https://www.paypal.com/donate/?hosted_button_id=MHJPUV97X4XVC)
 
 ![QR Code](QR-Code.png)
+
+If you want to sponsor this project for advertising, please contact me.
 
 If you want to contribute, I will discuss this later...
 

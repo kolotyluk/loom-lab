@@ -94,113 +94,8 @@ import java.util.stream.Stream;
  *     of the sibling tasks that are spawned. In short, Project Loom is an attempt to make Concurrent Families less
  *     dysfunctional... 😉
  * </p>
- * <h2 style="padding-top: 14pt;">Idioms & Lexicon</h2>
- * <dl>
- *     <dt>Thread</dt>
- *     <dd>
- *         A managed unit of concurrent execution.
- *     </dd>
- *     <dt>Platform Thread</dt>
- *     <dd>
- *         A Thread managed by the underlying Operating System the Java Virtual Machine is running on. Tends to be
- *         heavyweight and expensive to use.
- *     </dd>
- *     <dt>Virtual Thread</dt>
- *     <dd>
- *         A Thread managed by the JVM. Tends to be lightweight, and cheap to use.
- *     </dd>
- *     <dt>Carrier Thread</dt>
- *     <dd>
- *         A Platform Thread that 'carries' Virtual Threads, where the Virtual Threads are scheduled by the JVM.
- *     </dd>
- *     <dt>{@link StructuredExecutor}</dt>
- *     <dd>
- *         A new class of Executor that implements {@link Executor} and {@link AutoCloseable} interfaces, which
- *         provides better concurrent programming discipline.
- *     </dd>
- *     <dt>Session</dt>
- *     <dd>
- *         A lifecycle context initiated by {@link StructuredExecutor#open(String)} that defines several critical
- *         non-overlapping phases
- *         <ol>
- *             <li>
- *                 {@link StructuredExecutor#fork(Callable, BiConsumer)} to spawn new tasks.
- *             </li>
- *             <li>
- *                 {@link StructuredExecutor#join()} or {@link StructuredExecutor#joinUntil(Instant)} to block/wait
- *                 for all forked Tasks to complete with either success or failure.
- *             </li>
- *             <li>
- *                 <tt>completionHandler.throwIfFailed();</tt> to proceed to exception handling on failures.
- *             </li>
- *             <li>
- *                 {@link StructuredExecutor#close()} to release all the resources acquired with
- *                 {@link StructuredExecutor#open(String)}
- *             </li>
- *         </ol>
- *     </dd>
- *     <dt>Task</dt>
- *     <dd>
- *         Typically a {@link Runnable} or {@link Callable} passed to an {@link ExecutorService} for concurrent
- *         execution, where the handle to a Task is a {@link Future}.
- *         Tasks may be mapped 1:1 to Threads, or they may just be executed sequentially by threads in a
- *         Thread Pool, and that is determined by the implementation of the Executor. For example, in
- *         {@link ForkJoinPool} each Thread may execute many Tasks; when they complete one Task, they can
- *         execute the next scheduled Task. A task completes with a result, an exception, or it is cancelled.
- *     </dd>
- *     <dt>Completion</dt>
- *     <dd>
- *         When using the 2-arg fork method then the onComplete operation is invoked when the task completes,
- *         irrespective of whether it completed with a result, exception, or was cancelled.
- *         <ol>
- *             <li>
- *                 Success, with the value of the Callable.
- *             </li>
- *             <li>
- *                 Failure, with an exception.
- *             </li>
- *             <li>
- *                 Someone aborted, a subclass of Failure,
- *             </li>
- *             <li>
- *                 Shutdown.
- *             </li>
- *         </ol>
- *     </dd>
- *     <dt>Completion Handlers</dt>
- *     <dd>
- *         Completion handlers allows us to factor out policies for the common and simple cases where we need to
- *         collect results or shutdown the executor session based on the task’s success or failure. A call to shutdown
- *         indicates that the computation is done — either successfully or unsuccessfully — and so there’s no point
- *         in processing further results. In more complicated — and, we believe, much rarer — cases, like the connection
- *         example in the javadoc, the completion handler is, indeed, insufficient, and we’d want to do cleanup
- *         processing inside the task and possibly call shutdown directly.
- *     </dd>
- *     <dt>{@link Future}</dt>
- *     <dd>
- *         The object returned as a result of {@link StructuredExecutor#fork(Callable, BiConsumer)}. Can be used to
- *         interrogate the state of the running task, get the result, etc.
- *     </dd>
- *     <dt>Interrupt</dt>
- *     <dd>Threads can be interrupted, invited to end prematurely, but they cannot be forced to end prematurely.</dd>
- *     <dt>Cancel</dt>
- *     <dd>
- *         {@link Future#cancel(boolean)} is used to
- *     </dd>
- *     <dt>Shutdown</dt>
- *     <dd>
- *         <em>Shutdown is the concurrent execution analogue to a <tt>break</tt> statement in sequential loop.</em>
- *         The {@link StructuredExecutor#shutdown()} method is for cases where we've got an interesting
- *         result and we're no longer interested in the results of other tasks. The
- *         shutdown method closes the front door to prevent new threads from
- *         starting. It also interrupts the threads that are running the tasks that
- *         haven't completed yet. It also tries to make it clear that when shutdown
- *         completes that are tasks are "done" (it links to Future::isDone). You
- *         shouldn't need to use Future::get with this API but if you were then you
- *         should see that Future::get wakes up when SE::shutdown is called.
- *     </dd>
- * </dl>
-
+ * @see <a href="https://kolotyluk.github.io/loom-lab/">Project Documentation</a>
+ * @see <a href="https://kolotyluk.github.io/loom-lab/lexicon.md">Project Loom Lexicon</a>
  * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8277129">Structured Concurrency</a>
  * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8277131">Virtual Threads</a>
  * @see <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/StructuredExecutor.html">Class StructuredExecutor</a>
@@ -274,8 +169,8 @@ public class Experiment00 {
             // thrown from joinUntil() if the deadline is exceeded
             e.printStackTrace();
         } catch (IllegalStateException e) {
-            // thrown from resultNow() if the Future is not completed, but this should never happen
-            // if join() has been called first.
+            // thrown from resultNow() if the Future is not completed, or the Task failed,
+            // but this should never happen if join() and throwIfFailed() have been called first.
 
         }
         // When exiting this block, structuredExecutor.close() is called to 'finally' clean up.
