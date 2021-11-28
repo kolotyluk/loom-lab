@@ -3,7 +3,7 @@
 For [Ontology](https://en.wikipedia.org/wiki/Ontology)
 and [Taxonomy](https://en.wikipedia.org/wiki/Taxonomy)
 nerds like me, I try to offer my perspective on things. Much of what I offer
-here are things I have learned and experience with working with Project Loom, where I try to not only
+here are things I have learned and experience in experimenting with Project Loom, where I try to not only
 provide a Loom slant on things, but also a consistent narrative aligned with the experiments in this
 project. There are many other sources of information to consult on this rich subject-matter.
 
@@ -258,3 +258,11 @@ is for the situation where we want to shut down the session for any failure.
 [StructuredExecutor.ShutdownOnSuccess](https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/StructuredExecutor.ShutdownOnSuccess.html)
 is for the situation where we have a sufficient result and are no longer interested in further results
 from other tasks in the session.
+
+
+## Scope Local
+
+[ScopeLocal](https://download.java.net/java/early_access/loom/docs/api/java.base/java/lang/ScopeLocal.html)
+is a new concept introduced in JDK18, and used by Structured Concurrency to maintain a hierarchy of values
+and the scope they are defined in.
+

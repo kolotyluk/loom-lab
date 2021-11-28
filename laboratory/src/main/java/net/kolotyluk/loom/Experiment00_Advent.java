@@ -1,11 +1,8 @@
 package net.kolotyluk.loom;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.*;
 import java.util.function.BiConsumer;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -88,13 +85,27 @@ import java.util.stream.Stream;
  * </ol>
  * <h1 style="padding-top: 16pt;">Conclusions</h1>
  * <p>
- *     The StructuredExecutor we create here is a 'child' node of the Thread running, and each child that is forked
- *     becomes a child node of the StructuredExecutor. In this way, we can manage all forked threads as a group in
- *     a well-disciplined way. In a sense, the StructuredExecutor and the Thread it is opened from, are the parents
- *     of the sibling tasks that are spawned. In short, Project Loom is an attempt to make Concurrent Families less
+ *     The StructuredExecutor we create here is a 'child' node of the Thread running, inheriting the {@link ScopeLocal}
+ *     values of the thread, and each child that is forked becomes a child node of the StructuredExecutor, also
+ *     inheriting the {@link ScopeLocal} values. In this way, we can manage all forked threads as a group in a
+ *     well-disciplined way. In a sense, the StructuredExecutor and the Thread it is opened from, are the parents of
+ *     the sibling tasks that are spawned. In short, Project Loom is an attempt to make Concurrent Families less
  *     dysfunctional... 😉
  * </p>
+ * <h2 style="padding-top: 14pt;">Streams and Lazy Evaluation</h2>
+ * <p>
+ *     One trap I stumbled into with this experiement, was forgetting to terminate the {@link Stream} I was
+ *     using to spawn the Tasks. My original code looked like
+ *     <pre>
+ *
+ * var completedResults = futureStream.map(Future::resultNow).toList();
+ *     </pre>
+ *     Which threw an <tt>IllegalStateException</tt> because the tasks were not spawned until <tt>toList()</tt>
+ *     is called. The problem was not obvious to me, and I had to ask help from the Loom Developers to understand it.
+ *     So, when spawning tasks via a Stream, always remember to terminate the stream before calling <tt>join()</tt>.
+ * </p>
  * @see <a href="https://kolotyluk.github.io/loom-lab/">Project Documentation</a>
+ * @see <a href="https://kolotyluk.github.io/loom-lab/advantages.md">Loom Advantages</a>
  * @see <a href="https://kolotyluk.github.io/loom-lab/lexicon.md">Project Loom Lexicon</a>
  * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8277129">Structured Concurrency</a>
  * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8277131">Virtual Threads</a>
@@ -103,13 +114,14 @@ import java.util.stream.Stream;
  * @see <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/StructuredExecutor.ShutdownOnSuccess.html">Class StructuredExecutor.ShutdownOnSuccess</a>
  * @see <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/lang/ScopeLocal.html">Class ScopeLocal</a>
  */
-public class Experiment00 {
+public class Experiment00_Advent {
 
     public static void main(String args[]) {
-        Context.printHeader(Experiment00.class.getName());
+        Context.printHeader(Experiment00_Advent.class);
 
+        // The two kinds of Threads we can use, that generally share the same interfaces, but different implementations
         var platformThreadFactory = Thread.ofPlatform().factory();
-        var virtualThreadFactory = Thread.ofVirtual().factory();
+        var virtualThreadFactory  = Thread.ofVirtual().factory();
 
         // Best practice is to use try-with-resources to get an instance of an Executor, something that
         // implements Executor and AutoClosable. We don't need to specify virtualThreadFactory because it's
@@ -120,8 +132,8 @@ public class Experiment00 {
             var completionHandler = new StructuredExecutor.ShutdownOnFailure();
 
             // It is not good practice to 'fire-and-forget' concurrent tasks, so we collect all the Futures returned
-            // from fork() in order to manage them later if we need to.
-            var futureResults = IntStream.range(0, 15).mapToObj(item -> {
+            // from fork() in order to manage them later if we need to, or collect the results of the tasks.
+            var futureStream = IntStream.range(0, 16).mapToObj(item -> {
                 System.out.printf("item = %d, Thread ID = %s\n", item, Thread.currentThread());
                 return structuredExecutor.fork(() -> {
                     System.out.printf("\ttask = %d, Thread ID = %s\n", item, Thread.currentThread());
@@ -129,25 +141,38 @@ public class Experiment00 {
                 }, completionHandler);
             });
 
+            // Note: we need to terminate the Stream that is spawning Tasks before we call join(), otherwise
+            // when we call Future::resultNow below, we will get an IllegalStateException.
+            var futureList = futureStream.toList();
+
             // One way to wait for all our tasks to be done is to get() the results from all the Futures.
             // However, as we can see, this is kinda messy because of possible exceptions thrown. This is
             // old-school, so see below for better practices.
-            var results = futureResults.map(future -> {
-                try {
-                    return future.get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }).collect(Collectors.toList());
+//            var results = futureResults.map(future -> {
+//                try {
+//                    return future.get();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                } catch (ExecutionException e) {
+//                    e.printStackTrace();
+//                }
+//                return null;
+//            }).collect(Collectors.toList());
 
             // Rather than the above, it's more useful to call join() to wait for the session's lifecycle to complete.
             // Currently, we are REQUIRED to call join() before close() is implicitly called at the end of the block.
             // If we don't call join, close() will throw an exception. In concurrent programming, it's a best practice
             // to time limit operations.
-            structuredExecutor.joinUntil(Instant.now().plusSeconds(10));
+            try {
+                structuredExecutor.joinUntil(Instant.now().plusSeconds(10));
+            }
+            catch (TimeoutException e) {
+                // Sadly, we have to catch this here, because in the try-with-resources block, structuredExecutor
+                // is out of scope. One good strategy is to simply shutdown, then wait again with join, but there
+                // may be other strategies people want to use in other situations.
+                structuredExecutor.shutdown();
+                structuredExecutor.join();
+            }
 
             // Generally there is some other housekeeping we might do after rejoining all the threads we forked,
             // such as dealing with failure.
@@ -156,23 +181,32 @@ public class Experiment00 {
             // Rather than collect the results of all our tasks as above, it's better to call join(), and then
             // call resultNow() on the Futures, because we won't have to catch any exceptions. Note, it's best do
             // this after dealing with any failures first.
-            var completedResults = futureResults.map(Future::resultNow).toList();
+            var completedResults = futureList.stream().map(Future::resultNow).toList();
 
+            // This throws an Exception, so uncomment it to see what happens,
+            // but also comment out var futureList = futureStream.toList();
+            // var completedResults = futureStream.map(Future::resultNow).toList();
+
+            completedResults.forEach(System.out::println);
+
+            System.out.println("Finished Processing");
         }
         catch  (InterruptedException e) {
-            // thrown from join() and joinUntil() if we're being interrupted
-            System.out.println("interrupted");
+            // thrown from join() and joinUntil() if we're being interrupted, possibly a side effect of cancel
+            e.printStackTrace();
         } catch (ExecutionException e) {
             // thrown from throwIfFailed() if any of the children failed with an exception
             e.printStackTrace();
-        } catch (TimeoutException e) {
-            // thrown from joinUntil() if the deadline is exceeded
-            e.printStackTrace();
         } catch (IllegalStateException e) {
             // thrown from resultNow() if the Future is not completed, or the Task failed,
-            // but this should never happen if join() and throwIfFailed() have been called first.
-
+            // but this should never happen if join() and throwIfFailed() have been called first,
+            // so in this context, it's incorrect use of the API.
+            e.printStackTrace();
+        } finally {
+            System.out.println("Finished Finally");
         }
         // When exiting this block, structuredExecutor.close() is called to 'finally' clean up.
+
+        System.out.println("Finished Experiment");
     }
 }

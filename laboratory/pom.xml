@@ -30,6 +30,11 @@
         <junit.version>4.12</junit.version>
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
+        <scala.version>2.13.7</scala.version>
+<!--
+        <scala.home>C:\Program Files (Open)\scala3-3.1.0</scala.home>
+        <scala.version>3.1.0</scala.version>
+-->
     </properties>
 
     <dependencies>
@@ -38,6 +43,26 @@
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
+        <dependency>
+            <!-- We need this for our uber jar -->
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.7</version>
+        </dependency>
+<!--
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-compiler_3</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+-->
+<!--
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+-->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test-junit</artifactId>
@@ -60,6 +85,45 @@
 -->
 
         <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <configuration>
+                    <args>-deprecation</args>
+<!--
+                    <excludes>
+                        <exclude>**.java</exclude>
+                    </excludes>
+-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+<!--
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+-->
+            </plugin>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
@@ -93,7 +157,10 @@
                             <finalName>laboratory</finalName>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>net.kolotyluk.loom.Experiment02</mainClass>
+<!--
+                                    <mainClass>net.kolotyluk.loom.HelloKotlin</mainClass>
+-->
+                                    <mainClass>net.kolotyluk.loom.HelloScala</mainClass>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                             </transformers>

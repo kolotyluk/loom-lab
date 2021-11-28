@@ -6,7 +6,7 @@ public class Context {
     static long maxMemory = Runtime.getRuntime().maxMemory();
     static long pid = ProcessHandle.current().pid();
 
-    static void printHeader(String name) {
+    static void printHeader(Class clazz) {
 
         System.out.printf("""
                 Hello %s
@@ -15,7 +15,7 @@ public class Context {
                 Heap Size = %d bytes
                 ______________________________________________________________________________
                 
-                """, name, pid, availableProcessors, maxMemory);
+                """, clazz.getName(), pid, availableProcessors, maxMemory);
     }
 
 }

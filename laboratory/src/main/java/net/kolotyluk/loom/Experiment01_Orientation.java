@@ -56,7 +56,7 @@ import java.util.stream.IntStream;
 public class Experiment01_Orientation {
 
     public static void main(String ... args){
-        Context.printHeader(Experiment01_Orientation.class.getName());
+        Context.printHeader(Experiment01_Orientation.class);
 
         System.out.println("Fiber Fun - Experiment 1");
         System.out.println("CPU Cores = " + Runtime.getRuntime().availableProcessors() + '\n');

@@ -123,6 +123,7 @@ public class Experiment02 {
             var f = executorService.submit(() -> System.out.println());
             var b = executorService.submit(() -> 2 * 3);
 
+
             /* spawn is a configurable laboratory where we can investigate the behaviour of tasks.
              * Starting with a very simple happy path experiment, let's just get the value of some task.
              */
