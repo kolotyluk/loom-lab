@@ -53,10 +53,10 @@ import java.util.stream.IntStream;
  * @see <a href="https://www.youtube.com/watch?v=Nb85yJ1fPXM">Java ExecutorService - Part 1</a>
  * @author eric@kolotyluk.net
  */
-public class Experiment01_Orientation {
+public class Experiment02_Orientation {
 
     public static void main(String ... args){
-        Context.printHeader(Experiment01_Orientation.class);
+        Context.printHeader(Experiment02_Orientation.class);
 
         System.out.println("Fiber Fun - Experiment 1");
         System.out.println("CPU Cores = " + Runtime.getRuntime().availableProcessors() + '\n');

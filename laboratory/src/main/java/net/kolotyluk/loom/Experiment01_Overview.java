@@ -1,31 +1,22 @@
 package net.kolotyluk.loom;
 
 import java.time.Instant;
+import java.util.Objects;
+import java.util.OptionalLong;
 import java.util.concurrent.*;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
  * <h1>Simple loom-lab Experiment</h1>
  *  <p>
- *      This experiment is a quick way to jump into Project Loom, because we're here to 'il-loom-inate' things 😉
+ *     This experiment expands on the previous one, producing the same results, but doing so with a lot more code.
  *  </p>
  * <p>
- *     This is one of the most simple Project-Loom experiments that shows something interesting. When we run it we
- *     should see something like:
- * <pre>
- * item = 3, Thread ID = Thread[#1,main,5,main]
- * item = 4, Thread ID = Thread[#1,main,5,main]
- * item = 5, Thread ID = Thread[#1,main,5,main]
- *     task = 1, Thread ID = VirtualThread[#17]/runnable@ForkJoinPool-1-worker-2
- *     task = 0, Thread ID = VirtualThread[#15]/runnable@ForkJoinPool-1-worker-9
- * item = 6, Thread ID = Thread[#1,main,5,main]
- * item = 7, Thread ID = Thread[#1,main,5,main]
- * </pre>
- *     Where we just print some information on which thread the code is running on; the indented lines were spawned
- *     by the unindented lines. While this is a very simple experiment, we will look at many of the new Project Loom
- *     bells and whistles, using the best new practices, so that we are well grounded for further experiments.
+ *     While this is still a very simple experiment, we will look at many of the new Project Loom
+ *     bells and whistles, using some new best new practices, so that we are well grounded for further experiments.
  *     <em>Feel free to ignore most of this for now, but remember it's here to get grounded again.</em>
  * </p>
  * <h1 style="padding-top: 16pt;">Virtual Threads</h1>
@@ -59,11 +50,23 @@ import java.util.stream.Stream;
  *     <li>
  *         Define a Completion Handler from one of
  *         <ul>
- *             <li>StructuredExecutor.ShutdownOnFailure()</li>
- *             <li>StructuredExecutor.ShutdownOnSuccess()</li>
+ *             <li>
+ *                 <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/StructuredExecutor.ShutdownOnFailure.html">StructuredExecutor.ShutdownOnFailure()</a>
+ *                 when you want to shutdown on any failure.
+ *             </li>
+ *             <li>
+ *                 <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/StructuredExecutor.ShutdownOnSuccess.html">StructuredExecutor.ShutdownOnSuccess()</a>
+ *                 when you only care about the successfull results of one Task.
+ *             </li>
+ *             <li>
+ *                 <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/StructuredExecutor.CompletionHandler.html">StructuredExecutor.CompletionHandler</a>
+ *                 for a custom Completion Handler.
+ *             </li>
  *         </ul>
- *         each of which initiates the shutdown of the whole family of forked tasks... children, children of children,
- *         etc. These are also known as Completion Policies, and there could be other policies in the future.
+ *         each of which implements some actions on how Task completion is handled. These are also known as Completion
+ *         Policies, and there could be other policies in the future. Note, the act of shutting down not only affects
+ *         all the Tasks subordinate to this session, but also recursively shuts down any child sessions too, the whole
+ *         family of forked tasks... children, children of children, etc.
  *     </li>
  *     <li>
  *         Use {@link StructuredExecutor#fork(Callable, BiConsumer)} to fork (spawn) tasks according to the
@@ -71,13 +74,24 @@ import java.util.stream.Stream;
  *         Virtual Threads. {@link BiConsumer} the Completion Handler.
  *     </li>
  *     <li>
- *         {@link StructuredExecutor#join()} to wait for the lifecycles of all the spawned tasks to complete. Note,
- *         if these child tasks spawn their own tasks, those lifecycles must also complete.
+ *         Optionally, call {@link StructuredExecutor#shutdown()} to cancel all uncompleted Tasks. When this method
+ *         returns, the calling join() will return immediately without blocking/waiting. We may also call this after
+ *         {@link StructuredExecutor#joinUntil(Instant)} as in the code below, where our policy is to shutdown after
+ *         timeout. Note: this is very different than {@link ExecutorService#shutdown()} so there is a bit of paradigm
+ *         shift here.
+ *     </li>
+ *     <li>
+ *         Always call {@link StructuredExecutor#join()} to wait for the lifecycles of all the spawned tasks to
+ *         complete. Note, if these child Tasks spawn their own Tasks, those lifecycles must also complete first.
  *     </li>
  *     <li>
  *         Handle Execution Failures, such as with <tt>StructuredExecutor.ShutdownOnFailure.throwIfFailed();</tt>
  *         Basically, we need to deal with this before the try-with-resources block implicitly calls close() in
  *         the <tt>finally</tt> stage, because try-with-resources is not flexible enough to handle this situation.
+ *     </li>
+ *     <li>
+ *         Optionally, collect the results of all Tasks. If there are failures of some, but not all Tasks, handling
+ *         this is also shown below.
  *     </li>
  *     <li>
  *         Close the StructuredExecutor resource implicitly, finally completing its lifetime.
@@ -114,10 +128,10 @@ import java.util.stream.Stream;
  * @see <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/StructuredExecutor.ShutdownOnSuccess.html">Class StructuredExecutor.ShutdownOnSuccess</a>
  * @see <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/lang/ScopeLocal.html">Class ScopeLocal</a>
  */
-public class Experiment00_Advent {
+public class Experiment01_Overview {
 
     public static void main(String args[]) {
-        Context.printHeader(Experiment00_Advent.class);
+        Context.printHeader(Experiment01_Overview.class);
 
         // The two kinds of Threads we can use, that generally share the same interfaces, but different implementations
         var platformThreadFactory = Thread.ofPlatform().factory();
@@ -171,7 +185,9 @@ public class Experiment00_Advent {
                 // is out of scope. One good strategy is to simply shutdown, then wait again with join, but there
                 // may be other strategies people want to use in other situations.
                 structuredExecutor.shutdown();
-                structuredExecutor.join();
+                // Note, that while join() is idempotent, and we could call it again here, we don't need to because
+                // it's already been called, and shutdown has the effect of bringing the entire session to the join
+                // phase of the session.
             }
 
             // Generally there is some other housekeeping we might do after rejoining all the threads we forked,
@@ -187,9 +203,16 @@ public class Experiment00_Advent {
             // but also comment out var futureList = futureStream.toList();
             // var completedResults = futureStream.map(Future::resultNow).toList();
 
-            completedResults.forEach(System.out::println);
+            System.out.printf("completeResults = %s\n", completedResults);
 
-            System.out.println("Finished Processing");
+            // Instead of calling completionHandler.throwIfFailed() as above, we might want to simply collect
+            // partial results of successful Tasks, and generally ignore the reasons for failure.
+            var partialResults = futureList.stream()
+                .map(future -> future.isCancelled() ? null : future.resultNow())
+                .filter(Objects::nonNull)
+                .toList();
+
+            System.out.printf("partialResults  = %s\n", partialResults);
         }
         catch  (InterruptedException e) {
             // thrown from join() and joinUntil() if we're being interrupted, possibly a side effect of cancel
