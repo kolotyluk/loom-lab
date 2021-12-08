@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * <h1>Simple loom-lab Experiment</h1>
+ * <h1>Project Loom Overview Experiment</h1>
  *  <p>
  *     This experiment expands on the previous one, producing the same results, but doing so with a lot more code.
  *  </p>
@@ -208,8 +208,7 @@ public class Experiment01_Overview {
             // Instead of calling completionHandler.throwIfFailed() as above, we might want to simply collect
             // partial results of successful Tasks, and generally ignore the reasons for failure.
             var partialResults = futureList.stream()
-                .map(future -> future.isCancelled() ? null : future.resultNow())
-                .filter(Objects::nonNull)
+                .filter(future -> future.state() == Future.State.SUCCESS)
                 .toList();
 
             System.out.printf("partialResults  = %s\n", partialResults);

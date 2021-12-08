@@ -5,7 +5,6 @@ experimentation and exploration.
 
 See more at [Project Site Pages](https://kolotyluk.github.io/loom-lab) 
 
-
 My hope is to develop this into a learning tool for other people as well, so if you have ideas on how
 this can work better for you or others, please create a ticket in
 [loom-lab Issues](https://github.com/kolotyluk/loom-lab/issues).

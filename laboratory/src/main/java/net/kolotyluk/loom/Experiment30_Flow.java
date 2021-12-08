@@ -1,21 +1,17 @@
 package net.kolotyluk.loom;
 
-import java.net.http.HttpResponse;
-import java.time.Duration;
-
-import java.time.Instant;
-import java.util.concurrent.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
+import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.URI;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.*;
 
-public class Experiment20_HttpClient {
+public class Experiment30_Flow {
 
     public static void main2(String args[]) {
-        Context.printHeader(Experiment20_HttpClient.class);
+        Context.printHeader(Experiment30_Flow.class);
 
         var virtualThreadFactory  = Thread.ofVirtual().factory();
 
@@ -54,7 +50,7 @@ public class Experiment20_HttpClient {
     }
 
     public static void main(String args[]) {
-        Context.printHeader(Experiment20_HttpClient.class);
+        Context.printHeader(Experiment30_Flow.class);
 
         try (var structuredExecutor = StructuredExecutor.open("Experiment20")) {
 
