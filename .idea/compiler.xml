@@ -15,8 +15,8 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_STRING" value="--enable-preview" />
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="benchmarks" options="" />
-      <module name="laboratory" options="" />
+      <module name="benchmarks" options="--enable-preview" />
+      <module name="laboratory" options="--enable-preview" />
       <module name="old-school" options="" />
     </option>
   </component>

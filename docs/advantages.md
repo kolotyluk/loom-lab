@@ -98,6 +98,15 @@ listens on port 8000, and starts a new Virtual Thread for each HTTP Request, as 
 than before. An analogy I would like to offer is that Bubble Sort and Quicksort have the same API, but the
 implementations offer strikingly different performance.
 
+Finally, while this narrative has focused on Web Applications, such as HTTP Servers, this by
+no means implies that Project Loom does not have other applications too. For example, any
+application that can benefit from concurrency, but also has to handle transactions, such
+as blocking operations like I/O, can benefit from Project Loom.
+
+Project Loom does not directly improve Parallelism, where Java Parallel Streams are still the
+best tool for this; however, applications that use Java Parallel Stream, with transactions,
+could benefit from being refactored to use Virtual Threads.
+
 ## Reuse of Thread API
 
 While a key advantage of Project Loom is

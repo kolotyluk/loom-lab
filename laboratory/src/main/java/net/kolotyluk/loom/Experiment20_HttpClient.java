@@ -1,6 +1,7 @@
 package net.kolotyluk.loom;
 
 import java.net.http.HttpResponse;
+import java.nio.ByteBuffer;
 import java.time.Duration;
 
 import java.time.Instant;
@@ -53,6 +54,47 @@ public class Experiment20_HttpClient {
         }
     }
 
+    static class MyPublisher implements HttpRequest.BodyPublisher {
+
+        @Override
+        public long contentLength() {
+            return 0;
+        }
+
+        @Override
+        public void subscribe(Flow.Subscriber<? super ByteBuffer> subscriber) {
+
+        }
+    }
+
+    static class MySubscriber implements HttpResponse.BodySubscriber {
+
+        @Override
+        public CompletionStage getBody() {
+            return null;
+        }
+
+        @Override
+        public void onSubscribe(Flow.Subscription subscription) {
+
+        }
+
+        @Override
+        public void onNext(Object item) {
+
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
+    }
+
     public static void main(String args[]) {
         Context.printHeader(Experiment20_HttpClient.class);
 
@@ -68,6 +110,24 @@ public class Experiment20_HttpClient {
             var request = HttpRequest.newBuilder()
                     .uri(URI.create("https://www.boredapi.com/api/activity"))
                     .build();
+
+            var request2 = HttpRequest.newBuilder()
+                    .uri(URI.create("https://www.boredapi.com/api/activity"))
+                    .POST(new MyPublisher())
+                    .build();
+
+            var response2 =
+                    client
+                        .sendAsync(request2, info -> HttpResponse.BodySubscribers.ofPublisher())
+                        .thenAccept(action -> {action.body().subscribe(new MySubscriber()); })
+                        .join();
+
+            var response3 =
+                    client.sendAsync(request2, info -> HttpResponse.BodySubscribers.ofPublisher());
+
+            var result3 = response3
+                    .thenAccept(action -> {action.body().subscribe(new MySubscriber()); })
+                    .join();
 
             Callable<String> getActivity = () -> {
                 var response = client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
