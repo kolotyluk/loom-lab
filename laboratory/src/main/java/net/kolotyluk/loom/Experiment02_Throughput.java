@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  *      Consider these results obtained via the
  *      <a href="https://github.com/openjdk/jmh">Java Microbenchmark Harness (JMH)</a>
  *      in
- *      <a href="../benchmarks/src/main/java/net/kolotyluk/benchmark/BasicThroughput.java">BasicThroughput</a>
+ *      <a href="https://github.com/kolotyluk/loom-lab/blob/master/benchmarks/src/main/java/net/kolotyluk/benchmark/BasicThroughput.java">BasicThroughput</a>
  *      that we will analyze below...
  *  </p>
  *  <pre>
