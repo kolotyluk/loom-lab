@@ -126,6 +126,7 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.3.1</version>
                     <configuration>
+                        <additionalOptions>--enable-preview</additionalOptions>
                         <failOnError>false</failOnError>
                     </configuration>
                 </plugin>
