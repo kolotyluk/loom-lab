@@ -49,6 +49,7 @@ experimentation and exploration.
 
 - [GitHub](https://github.com/kolotyluk/loom-lab)
 - [API Documentation](site/apidocs/index.html)
+  - [laboratory](../laboratory/docs/site/apidocs/index.html)
 - [Maven Site Documentation](site/index.html)
 - [Loom Advantages](advantages.md)
 - [Loom Lab Lexicon](lexicon.md)
