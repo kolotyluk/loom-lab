@@ -5,6 +5,7 @@
 -protected
 -sourcepath
 'C:/Users/ERIC/Documents/git/loom-lab/benchmarks/src/main/java;C:/Users/ERIC/Documents/git/loom-lab/benchmarks/target/generated-sources/annotations;C:/Users/ERIC/Documents/git/loom-lab/old-school/src/main/kotlin;C:/Users/ERIC/Documents/git/loom-lab/laboratory/src/main/java;C:/Users/ERIC/Documents/git/loom-lab/laboratory/target/generated-sources/annotations'
+--enable-preview
 -author
 -bottom
 'Copyright &#169; 2021 <a href="https://kolotyluk.github.io">Eric Kolotyluk</a>. All rights reserved.'
