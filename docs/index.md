@@ -52,9 +52,9 @@ experimentation and exploration.
 - [GitHub](https://github.com/kolotyluk/loom-lab)
 - [Maven Site Documentation](site/index.html)
   - [benchmarks](site/benchmarks/index.html)
-    - [API](site/benchmarks/apidocs/net/kolotyluk/loom/package-summary.html)
+    - [API](site/benchmarks/apidocs/index.html)
   - [laboratory](site/laboratory/index.html)
-    - [API](site/laboratory/apidocs/net/kolotyluk/loom/package-summary.html)
+    - [API](site/laboratory/apidocs/index.html)
     
 This is the main body of documentation for loom-lab.
 
