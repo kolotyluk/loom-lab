@@ -155,7 +155,7 @@ public class Experiment10_Flow {
                             System.out.printf("\tpublisher task = %d, Thread ID = %s\n", item, Thread.currentThread());
                             // By introducing random lag, we pretty much guarantee items are out of order in the buffers.
                             // However, when message are produced synchronously, they will always remain in order.
-                            Lag.sleep(Duration.ofMillis(1),Duration.ofMillis(10));
+                            new Lag(Duration.ofMillis(1),Duration.ofMillis(10)).sleep();
                             // Note, the publisher may block here if the buffers on the subscribers are full,
                             // As this is a principle feature of back-pressure. However, any thread can produce
                             // messages, as we are doing here, and with Virtual Threads, we don't care about blocking

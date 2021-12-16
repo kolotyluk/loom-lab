@@ -1,5 +1,6 @@
 package net.kolotyluk.loom;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -31,24 +32,12 @@ public class Primes {
      * @see <a href="https://stackoverflow.com/questions/69842535/is-there-any-benefit-to-thead-onspinwait-while-doing-cpu-bound-work">Is there any benefit to Thead.onSpinWait() while doing CPU Bound work?</a>
      */
     static boolean isPrime(long candidate, long minimumLag, long maximumLag) {
-
-        BinaryOperator<Long> lag = (minimum, maximum) -> {
-            if (minimum <= 0 || maximum <= 0) return 0L;
-            var approx = (long) Math.nextUp(Math.sqrt(maximum - minimum)); // TODO ???
-            try {
-                var approximateLag = minimum + approx;
-                Thread.sleep(approximateLag);
-                return approximateLag;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            finally {
-                return 0L;
-            }
-        };
+        var lag = new Lag(Duration.ofMillis(minimumLag), Duration.ofMillis(maximumLag));
 
         try {
-            lag.apply(minimumLag, maximumLag);  // Simulate network request overhead
+           // lag.apply(minimumLag, maximumLag);  // Simulate network request overhead
+            lag.sleep(); // Simulate network request overhead
+
 
             if (candidate == 2) return true;
             if ((candidate & 1) == 0) return false; // filter out even numbers
@@ -63,7 +52,8 @@ public class Primes {
             return true;
         }
         finally {
-            lag.apply(minimumLag, maximumLag);  // Simulate network response overhead
+            // lag.apply(minimumLag, maximumLag);  // Simulate network response overhead
+            lag.sleep(); // Simulate network request overhead
         }
     }
 }

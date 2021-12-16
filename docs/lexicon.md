@@ -1,5 +1,7 @@
 # Project Loom Lexicon
 
+✨ marks concepts new to Project Loom
+
 For [Ontology](https://en.wikipedia.org/wiki/Ontology)
 and [Taxonomy](https://en.wikipedia.org/wiki/Taxonomy)
 nerds like me, I try to offer my perspective on things. Much of what I offer
@@ -51,6 +53,66 @@ See also
 * <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/StructuredExecutor.ShutdownOnSuccess.html">Class StructuredExecutor.ShutdownOnSuccess</a>
 * <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/lang/ScopeLocal.html">Class ScopeLocal</a>
 
+# CPU Architecture
+
+To help in our understanding of the value and practice of concurrency, we will explore some basic CPU Architecture
+principles.
+
+It is important to point out that by the year 2000, CPU clock speeds were beginning to top out at about 3 GHz,
+and by 2012, the
+[IBM zEC12](https://en.wikipedia.org/wiki/IBM_zEC12_(microprocessor))
+was the highest base clock rate of any commercial processor at 5.5 GHz. While clock rates of over 8 GHz have
+been achieved, this is usually done by enthusiasts using exotic cooling methods such as liquid nitrogen and
+liquid helium. Suffice it to say, physics will not allow us to increase CPU clock rates with our known
+technology. 
+
+While the number of Instructions Per Clock (IPC) continues to increase, these are due to CPU architectural
+design improvements that increase parallelism in the instruction pipeline, however there are pragmatic limits
+to performance improvements here too.
+
+By 2021 we are looking at chip geometries of 5 nm which allow for billions of transistor per chip, and new
+packaging technologies that allow for 3 dimensional layers, as well as other assembly techniques where there
+can be tens or hundreds of billions of transistors per package, and the trend for higher
+[Transistor Count](https://en.wikipedia.org/wiki/Transistor_count)
+continues to improve.
+
+***The bottom line is that while we cannot make CPUs go much faster, it is much easier to add more CPUs or Cores
+to a package such as a System On a Chip (SOC). In order to exploit this trend in technology we need software that
+can make better use of 'Parallelism,' and for that, we need software that can make better use of 'Concurrency.'***
+
+## Central Processing Unit
+
+In the early days, the CPU could execute one program at a time, often in a batch system, where each program would
+run sequentially. Eventually, Time-Shared systems were developed where programs could be interleaved, where one
+program would be preempted, its state saved, and another program run for some quanta of time, maybe tens of
+milliseconds, and so on. This was early concurrency, but only at the O/S level, and not the program level.
+
+The IBM 360 was one of the first computer systems that supported multiple CPUs, that shared main memory, such
+that a single O/S could schedule programs on multiple CPUs at the same time.
+
+Before the invention of Core, multiple-CPU systems typically implemented each CPU on its own chip, where there
+might be multiple system boards per system, or multiple CPU chips per system board.
+
+## Core
+
+Eventually CPUs were developed with multiple Cores such that each core appeared to the O/S as a separate CPU.
+
+## Hardware Thread
+
+Eventually CPUs were developed with multiple Hardware Threads per Core, such that each Hardware Thread appeared
+to the O/S as a separate CPU.
+
+## Software
+
+From the perspective of Software, especially O/S Software, 
+
+## Process
+
+[java.lang.Process](https://download.java.net/java/early_access/loom/docs/api/java.base/java/lang/Process.html)
+Is not exactly part of the Java Concurrency API, but does provide programmers with concurrency capabilities, although
+not in the same way as Threads. In general, each Java Virtual Machine runs in a single
+[Process](https://en.wikipedia.org/wiki/Thread_(computing)#Processes).
+
 ## Package java.util.concurrent
 
 [java.util.concurrent](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/package-summary.html)
@@ -60,20 +122,24 @@ utility resources.
 ## Thread
 
 [java.lang.Thread](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Thread.html)
-Is a managed unit of concurrent execution that is the basis most Java Concurrency.
+Is a managed unit of concurrent execution that is the basis most Java Concurrency. See also
+[Thread](https://en.wikipedia.org/wiki/Thread_(computing)) on wikipedia.
 
 ### Platform Thread
 
-[Thread.ofPlatform()](https://download.java.net/java/early_access/loom/docs/api/java.base/java/lang/Thread.html#ofPlatform())
+[Thread.ofPlatform() ✨](https://download.java.net/java/early_access/loom/docs/api/java.base/java/lang/Thread.html#ofPlatform())
 Is one way to specify a Thread managed by the underlying Operating System the Java Virtual Machine is running on. Tends to be
-heavyweight and expensive to use.
+heavyweight and expensive to use. Until now, there was only one type of Thread, so we did not need to distinguish
+these from other types of threads. While *Platform Thread* is the official term in this domain, these are also known as
+[Kernel Threads](https://en.wikipedia.org/wiki/Thread_(computing)#Kernel_threads)
 
-### Virtual Thread
 
-[Thread.ofVirtual()](https://download.java.net/java/early_access/loom/docs/api/java.base/java/lang/Thread.html#ofVirtual())
+### Virtual Thread ✨
+
+[Thread.ofVirtual() ✨](https://download.java.net/java/early_access/loom/docs/api/java.base/java/lang/Thread.html#ofVirtual())
 Is one way to specify a Thread managed by the JVM. Also known as
-[User Thread](https://en.wikipedia.org/wiki/Thread_(computing)#User_threads) or
-[Fiber](https://en.wikipedia.org/wiki/Thread_(computing)#Fibers),
+[User Thread ✨](https://en.wikipedia.org/wiki/Thread_(computing)#User_threads) or
+[Fiber ✨](https://en.wikipedia.org/wiki/Thread_(computing)#Fibers),
 Virtual Threads generally share the same APIs as legacy Platform Threads, but these are lightweight, and cheap to use.
 In many cases, with minor refactoring, legacy code can realize impressive performance improvements by switching to
 Virtual Threads.
@@ -88,17 +154,25 @@ to orchestrate a number of execution tasks over a limited number of Threads, it 
 often more desirable to use one of the
 [java.util.concurrent.Executors](https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/Executors.html)
 such as
-[newThreadPerTaskExecutor(ThreadFactory threadFactory)](https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/Executors.html#newThreadPerTaskExecutor(java.util.concurrent.ThreadFactory)),
+[newThreadPerTaskExecutor(ThreadFactory threadFactory) ✨](https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/Executors.html#newThreadPerTaskExecutor(java.util.concurrent.ThreadFactory)),
 that does not use a Thread Pool. For example, Virtual Thread Tasks with a lot of blocking operations, such as I/O, can
 provide greater parallel concurrency than via a Thread Pool.
 
-### Carrier Thread
+#### Delimited Continuations ✨
+
+*Virtual Threads* are implemented using
+[Delimited Continuations](https://en.wikipedia.org/wiki/Delimited_continuation), and for the most part Loom users do
+not need to care, and initially this low level API will not be exposed. However, many people have expressed
+interest in using this low level API, so in the future, we may see it exposed when it's robust enough.
+
+### Carrier Thread ✨
 
 A Platform Thread that 'carries' Virtual Threads, where the Virtual Threads are scheduled by the JVM.
 
 ### Interrupt
 
-Threads can be interrupted, *invited to end prematurely,* but they cannot be forced to end prematurely.</dd>
+Threads can be interrupted, *invited to end prematurely,* but they cannot be forced to end prematurely, and they
+cannot be preempted.
 
 ### Blocking Transactions
 

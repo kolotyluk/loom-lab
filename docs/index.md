@@ -23,19 +23,24 @@ which implies for the same latency on the same hardware, we need to improve our 
 Java has had a concurrency API from the beginning, starting with
 [Green Threads](https://en.wikipedia.org/wiki/Green_threads)
 in 1.0, but quickly moving to
-[Kernel Threads](https://en.wikipedia.org/wiki/Thread_(computing)#Kernel_threads),
-called *Platform Threads* in the Loom Lexicon.
+[Kernel Threads](https://en.wikipedia.org/wiki/Thread_(computing)#Kernel_threads), called
+[Platform Threads](lexicon.md#platform-thread) the Loom Lexicon.
 
 Project Loom improves concurrency by offering the same *Interface* with a different *Implementation*
 that uses
 [User Threads](https://en.wikipedia.org/wiki/Thread_(computing)#User_threads) or
-[Fibers](https://en.wikipedia.org/wiki/Thread_(computing)#Fibers), called *Virtual Threads* in
-the Loom Lexicon.
+[Fibers](https://en.wikipedia.org/wiki/Thread_(computing)#Fibers), called
+[Vitual Threads](lexicon.md#virtual-thread) in the Loom Lexicon.
 
 While there are no changes to the Java Language, there are changes to the Java Libraries and the
-Java Virtual Machine to support Project Loom Capabilities. ***Virtual Threads offer improved
-concurrency over Platform Threads.*** Learn more in
-[Loom Advantages](advantages.md).
+Java Virtual Machine to support Project Loom Capabilities, where ***Virtual Threads offer improved
+concurrency over Platform Threads.***
+
+## Goals and Objectives
+
+While the purpose, or main goal of Project Loom is improved Application Throughput, there are 
+various other Goals and Objectives. Learn more in [Loom Advantages](advantages.md).
+
 
 # Core Documentation
 

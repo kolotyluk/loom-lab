@@ -1,5 +1,6 @@
 package net.kolotyluk.loom;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -776,26 +777,12 @@ public class Experiment03_PrimeStreams {
      * @see <a href="https://stackoverflow.com/questions/69842535/is-there-any-benefit-to-thead-onspinwait-while-doing-cpu-bound-work">Is there any benefit to Thead.onSpinWait() while doing CPU Bound work?</a>
      */
     static boolean isPrime(long candidate, long minimumLag, long maximumLag, AtomicLong threadCount, AtomicLong threadMaximum) {
-
-        BinaryOperator<Long> lag = (minimum, maximum) -> {
-            if (minimum <= 0 || maximum <= 0) return 0L;
-            var approx = (long) Math.nextUp(Math.sqrt(maximum - minimum));
-            try {
-                var approximateLag = minimum + approx;
-                Thread.sleep(approximateLag);
-                return approximateLag;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            finally {
-                return 0L;
-            }
-        };
+        var lag = new Lag(Duration.ofMillis(minimumLag), Duration.ofMillis(maximumLag));
 
         try {
             if (threadMaximum != null) threadCount.getAndIncrement();
 
-            lag.apply(minimumLag, maximumLag);  // Simulate network request overhead
+            lag.sleep();
 
             if (candidate == 2) return true;
             if ((candidate & 1) == 0) return false; // filter out even numbers
@@ -807,7 +794,7 @@ public class Experiment03_PrimeStreams {
                 if (candidate % divisor == 0) return false;
             }
 
-            lag.apply(minimumLag, maximumLag);  // Simulate network response overhead
+            lag.sleep();
 
             return true;
         }
