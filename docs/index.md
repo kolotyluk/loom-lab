@@ -47,13 +47,15 @@ various other Goals and Objectives. Learn more in [Loom Advantages](advantages.m
 A place to learn about [Project Loom](https://openjdk.java.net/projects/loom) through hands-on
 experimentation and exploration.
 
-- [GitHub](https://github.com/kolotyluk/loom-lab)
-- [API Documentation](site/apidocs/index.html)
-  - [laboratory](../laboratory/docs/site/apidocs/index.html)
-- [Maven Site Documentation](site/index.html)
 - [Loom Advantages](advantages.md)
 - [Loom Lab Lexicon](lexicon.md)
-
+- [GitHub](https://github.com/kolotyluk/loom-lab)
+- [Maven Site Documentation](site/index.html)
+  - [benchmarks](site/benchmarks/index.html)
+    - [API](site/benchmarks/apidocs/net/kolotyluk/loom/package-summary.html)
+  - [laboratory](site/laboratory/index.html)
+    - [API](site/laboratory/apidocs/net/kolotyluk/loom/package-summary.html)
+    
 This is the main body of documentation for loom-lab.
 
 My hope is to develop this into a learning tool for other people as well, so if you have ideas on how
