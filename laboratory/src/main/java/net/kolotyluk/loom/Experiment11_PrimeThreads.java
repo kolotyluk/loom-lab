@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import static net.kolotyluk.loom.Experiment03_PrimeStreams.getPrimes;
-import static net.kolotyluk.loom.Experiment03_PrimeStreams.isPrime;
+import static net.kolotyluk.loom.Experiment10_PrimeStreams.getPrimes;
+import static net.kolotyluk.loom.Experiment10_PrimeStreams.isPrime;
 
 /**
  * TODO - Experiment with Java Flow
@@ -249,7 +249,7 @@ import static net.kolotyluk.loom.Experiment03_PrimeStreams.isPrime;
  * @see <a href="https://github.com/openjdk/jmh">Java Microbenchmark Harness (JMH)</a>
  * @author eric@kolotyluk.net
  */
-public class Experiment04_PrimeThreads {
+public class Experiment11_PrimeThreads {
     static final long limit1 = 1000;
     static final long limit2 = 10_000;
     static final long limit3 = 10_000_000;

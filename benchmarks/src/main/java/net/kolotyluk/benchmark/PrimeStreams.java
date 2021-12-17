@@ -1,6 +1,6 @@
 package net.kolotyluk.benchmark;
 
-import net.kolotyluk.loom.Experiment03_PrimeStreams;
+import net.kolotyluk.loom.Experiment10_PrimeStreams;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -53,42 +53,42 @@ public class PrimeStreams {
     @BenchmarkMode(Mode.All)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public void serialPrimesTo_1000() {
-        Experiment03_PrimeStreams.serialPrimes(1000);
+        Experiment10_PrimeStreams.serialPrimes(1000);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.All)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public void serialPrimesTo_10_000() {
-        Experiment03_PrimeStreams.serialPrimes(10_000);
+        Experiment10_PrimeStreams.serialPrimes(10_000);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.All)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public void serialPrimesTo_10_000_000() {
-        Experiment03_PrimeStreams.serialPrimes(10_000_000);
+        Experiment10_PrimeStreams.serialPrimes(10_000_000);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.All)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public void parallelPrimesTo_1000() {
-        Experiment03_PrimeStreams.parallelPrimes(1000);
+        Experiment10_PrimeStreams.parallelPrimes(1000);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.All)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public void parallelPrimesTo_10_000() {
-        Experiment03_PrimeStreams.parallelPrimes(10_000);
+        Experiment10_PrimeStreams.parallelPrimes(10_000);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.All)
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public void parallelPrimesTo_10_000_000() {
-        Experiment03_PrimeStreams.parallelPrimes(10_000_000);
+        Experiment10_PrimeStreams.parallelPrimes(10_000_000);
     }
 
 }

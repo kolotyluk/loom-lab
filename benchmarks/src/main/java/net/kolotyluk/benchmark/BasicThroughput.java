@@ -1,7 +1,6 @@
 package net.kolotyluk.benchmark;
 
 import net.kolotyluk.loom.Experiment02_Throughput;
-import net.kolotyluk.loom.Experiment03_PrimeStreams;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;

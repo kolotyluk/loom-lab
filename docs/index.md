@@ -1,3 +1,9 @@
+<!--
+    To build this documentation, use `mvn site` at the root of the project,
+    then use git to commit and push the changes. Once pushed, it can take GitHub
+    several minutes or so to rebuild https://kolotyluk.github.io/loom-lab/
+-->
+
 # Purpose of Loom
 
 The [purpose of Project Loom](https://www.youtube.com/watch?v=fq0OEX0XYR8) is to increase the
@@ -49,6 +55,7 @@ experimentation and exploration.
 
 - [Loom Advantages](advantages.md)
 - [Loom Lab Lexicon](lexicon.md)
+- [Videos](VIDEOS.md)
 - [GitHub](https://github.com/kolotyluk/loom-lab)
 - [Maven Site Documentation](site/index.html)
   - [benchmarks](site/benchmarks/index.html)

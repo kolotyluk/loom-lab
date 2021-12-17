@@ -145,6 +145,10 @@
                     <configuration>
                         <additionalOptions>--enable-preview</additionalOptions>
                         <failOnError>false</failOnError>
+<!--
+                        <stylesheet>maven</stylesheet>
+                        <stylesheetfile>javadoc.css</stylesheetfile>
+-->
                     </configuration>
                 </plugin>
                 <plugin>

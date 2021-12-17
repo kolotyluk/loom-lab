@@ -24,6 +24,15 @@
 
 - Project Loom will best help you for I/O Concurrency, but not for CPU Bound Concurrency
 
+## 2021-12-17
+- [Project Loom Brings Structured Concurrency - Inside Java Newscast #17](https://www.youtube.com/watch?v=2J2tJm_iwk0)
+- [Java](https://www.youtube.com/channel/UCmRtPmgnQ04CMUpSUqPfhxQ)
+
+### Conclusions
+
+- A good introduction to Structured Concurrency
+- A good reminder of the distinction between Concurrency and Parallelism
+
 ## 2019-07-18
 - [Ron Pressler - Loom: Bringing Lightweight Threads and Delimited Continuations to the JVM](https://www.youtube.com/watch?v=r6P0_FDr53Q)
 - [Curry On!](https://www.youtube.com/channel/UC-WICcSW1k3HsScuXxDrp0w)

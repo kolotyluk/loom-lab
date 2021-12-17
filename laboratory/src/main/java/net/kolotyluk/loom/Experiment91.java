@@ -1,20 +1,16 @@
 package net.kolotyluk.loom;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * <h1>Experiment Suite 03</h1>
  * @see <a href="https://wiki.openjdk.java.net/display/loom/Getting+started">Loom Getting Started</a>
  * @see <a href="https://www.youtube.com/watch?v=Nb85yJ1fPXM">Java ExecutorService - Part 1</a>
  */
-public class Experiment05 {
+public class Experiment91 {
 
     public static void main(String args[]){
         System.out.println("Fiber Fun - Experiment 3");

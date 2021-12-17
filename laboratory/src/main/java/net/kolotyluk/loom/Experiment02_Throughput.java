@@ -22,7 +22,7 @@ import java.util.stream.Stream;
  *      that we will analyze below...
  *  </p>
  *  <pre>
- * Benchmark                                          Throughput        Error
+ * Benchmark                                         runs/second        Error
  * baselineStream1To_10                              7687469.693 ± 224814.056
  * baselineStream1To_100                             1104471.967 ±  27214.069
  * baselineStream1To_1000                             114529.797 ±   3105.523
@@ -107,44 +107,91 @@ import java.util.stream.Stream;
  *     less than the pure Wait time for testing if values are prime numbers. If we want to improve throughput,
  *     then we need to consider:
  *
- *     <div style="padding: 30pt;font-size: 30pt;font-family: 'Times New Roman', serif;">λ = L/W</div>
+ *     <div style="padding: 30pt;font-size: 30pt;font-family: 'Times New Roman', serif;">λ = L / W</div>
  *
  *     then, without changing W, we need to increase L to increase λ. However, <em>Pure</em> Wait is not the
  *     same as <em>Transactional</em> Wait, and we can see the effects of this in our benchmarks. In these
  *     benchmarks, except for serial Streams, the count to 10, to 100, to 1000, to 10000, indicates a higher
- *     level of concurrency. However, there are also different implementations of concurrency, which is why
+ *     <em>demand</em> for concurrency. However, there are also different implementations of concurrency, which is why
  *     these benchmarks are interesting. A key concept is that is that Level of Concurrency also implies
  *     Quality of Concurrency.
  * </p>
- * <h2 style="padding-top: 12pt;">Computational vs Transactional</h2>
+ * <h2>Parallel vs Sequential</h2>
+ * <p>
+ *     The first thing we should notice is <tt>baselineStream1...</tt> vs <tt>baselineStream2...</tt> where
+ *     the Throughput λ of <tt>baselineStream1...</tt> is always higher, because the Wait W is lower.
+ *     Similarly this is true of <tt>parallelStream1...</tt> vs <tt>parallelStream2...</tt> for the same reason.
+ * </p>
+ * <p>
+ *     The other impression we should have is that Parallel Streams are <strong><em>capable</em></strong> of better
+ *     throughput than Sequential Streams, but there is an substantial <em>overhead</em> in running Parallel Streams,
+ *     so a thoughtful design with performance testing such as benchmarks is useful in understanding where the benefits
+ *     of <em>Parallelism</em> kick in.
+ *     <ul>
+ *         <li>
+ *             When running a low W task, <tt>baselineStream1To_1000</tt> has better throughput than
+ *             <tt>parallelStream1To_1000</tt>, but <tt>parallelStream1To_10000</tt> has better throughput than
+ *             <tt>baselineStream1To_1000</tt>, so somewhere between 1,000 and 10,000 Parallel Streams gets better
+ *             throughput than Serial Streams.
+ *         </li>
+ *         <li>
+ *             When running a higher W task, <tt>parallelStream2To_1000</tt> has better throughput than
+ *             <tt> baselineStream2To_1000</tt>, so when W is higher, a higher λ helps us sooner because the
+ *             overhead of concurrency is less dominant than the cost of the task.
+ *         </li>
+ *     </ul>
+ *     In conclusion, when <strong><em>optimizing throughput through parallelization</em></strong>, it helps to
+ *     understand what level of concurrency is needed with respect to pure W, but ultimately devising benchmarks
+ *     will guide us best.
+ *     <blockquote>
+ *         Parallelism is strictly an optimization<br />
+ *         — Brian Goetz
+ *     </blockquote>
+ * </p>
+ * <h2>Computational vs Transactional</h2>
  * <p>
  *     The {@link java.util.stream.Stream} API is an excellent framework for computational tasks. In particular,
  *     {@link Stream#parallel()} is a simple way to optimize purely computational tasks that are independent.
- *     By <em>purely computational</em> I mean tasks that do not call any blocking/transactional APIs. By
+ *     By <em>purely computational</em> I mean, tasks that do not call any blocking/transactional APIs. By
  *     <em>transactional</em> I mean any API, such as {@link Thread#sleep(Duration)}, that will <em>pin</em>
  *     the task such that it cannot be scheduled for execution until the transaction has completed.
  * </p>
  * <p>
  *     Half of the benchmarks are purely computational, while the other half are transactional, and the first
  *     impression we should have is that Streams are good for purely computational tasks, but not for transactional
- *     task, while the opposite is largely true from Platform Threads and Virtual Threads.
+ *     task, while the opposite is largely true for Platform Threads and Virtual Threads.
+ *     <ul>
+ *         <li>
+ *             In the case of pure computation, at no time in these benchmarks did Virtual Threads perform
+ *             better than Parallel Streams.
+ *         </li>
+ *         <li>
+ *             In the case of transactions, 1 ms Thread Sleep per task, Streams and Parallel Streams only perform
+ *             well with low λ, as do Platform Threads. It is interesting to note that in these experiments,
+ *             Platform Threads seems to perform similarly to Streams and Parallel Streams. 🤔
+ *         </li>
+ *     </ul>
  * </p>
- * <h2 style="padding-top: 12pt;">Parallel vs Sequential</h2>
+ * <h2>Platform Threads vs Virtual Threads</h2>
  * <p>
- *     The other impression we should have is that Parallel Streams are capable of better throughput than
- *     Sequential Streams, but there is an substantial overhead in running Parallel Streams, so a thoughtful
- *     design with performance testing such as benchmarks is useful in understanding where the benefits of
- *     <em>Parallelism</em> kick in.
+ *     The most important thing we should note is generally how much better Virtual Threads perform than Platform Threads.
+ *     The other thing that is striking from the transactional results is that Virtual Threads are much more balanced
+ *     and predictable in their throughput than Platform Threads under difference levels of concurrency. When we are
+ *     designing and implementing concurrent applications, <em>balanced</em> and <em>predictable</em> are qualities
+ *     we want to embrace.
  * </p>
- * <h2 style="padding-top: 12pt;">Platform Threads vs Virtual Threads</h2>
+ * <h1>Also</h1>
  * <p>
- *     The first thing we should note is generally how much better Virtual Threads perform than Platform Threads.
- *     The other thing that is striking from these results is that Virtual Threads are much more balanced and
- *     predictable in their throughput than Platform Threads.
+ *     For clarification on the distinction between Concurrency and Parallelism, see
+ *     <a href="https://www.youtube.com/watch?v=2J2tJm_iwk0">Project Loom Brings Structured Concurrency - Inside Java Newscast #17</a>.
+ *     For better context overall, checkout the
+ *     <a href="https://kolotyluk.github.io/loom-lab/lexicon.html">lexicon</a> and
+ *     <a href="https://kolotyluk.github.io/loom-lab/advantages.html">loom advantages</a>.
  * </p>
  * @see <a href="https://wiki.openjdk.java.net/display/loom/Getting+started">Loom Getting Started</a>
  * @see <a href="https://www.youtube.com/watch?v=Nb85yJ1fPXM">Java ExecutorService - Part 1</a>
  * @see <a href="https://github.com/openjdk/jmh">Java Microbenchmark Harness (JMH)</a>
+ * @see <a href="https://www.youtube.com/watch?v=2J2tJm_iwk0">Project Loom Brings Structured Concurrency - Inside Java Newscast #17</a>
  * @author eric@kolotyluk.net
  */
 public class Experiment02_Throughput {

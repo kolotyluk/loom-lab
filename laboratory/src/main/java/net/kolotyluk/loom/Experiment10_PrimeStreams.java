@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -50,8 +49,8 @@ import java.util.stream.Stream;
  *         <strong><em>naming things</em></strong>.
  *         <p>— Phil Karlton</p>
  *     </blockquote>
- *     As we can see in {@link Experiment03_PrimeStreams#serialPrimes(long)} it is very easy to express taking a range
- *     of numbers, and filtering out the primes. From {@link Experiment03_PrimeStreams#parallelPrimes(long)} we can see
+ *     As we can see in {@link Experiment10_PrimeStreams#serialPrimes(long)} it is very easy to express taking a range
+ *     of numbers, and filtering out the primes. From {@link Experiment10_PrimeStreams#parallelPrimes(long)} we can see
  *     how easy it is to change this to parallel computation. However, with some experimentation, we can easily
  *     see that unless we have a large set of computations, 10,000 or more, making the computations parallel
  *     does not really buy us much. This is because the overhead of Concurrent Operation can easily overwhelm
@@ -97,7 +96,7 @@ import java.util.stream.Stream;
  * <p>
  *     For these experiments we warp our primes experiments into a pseudo networking application, where we simulate
  *     farming <tt>isPrime()</tt> out to HTTP Endpoints. This simulation basically wraps the
- *     {@link Experiment03_PrimeStreams#isPrime(long, long, long, AtomicLong, AtomicLong)} calculation with network latency via
+ *     {@link Experiment10_PrimeStreams#isPrime(long, long, long, AtomicLong, AtomicLong)} calculation with network latency via
  *     {@link Thread#sleep(long)}, one to simulate Request Latency, another to simulate Response
  *     Latency.
  * </p>
@@ -224,7 +223,7 @@ import java.util.stream.Stream;
  *     out to some HTTP Endpoint?
  * </p>
  * <p>
- *      Using the same {@link Experiment03_PrimeStreams#isPrime(long, long, long, AtomicLong, AtomicLong)} code as the previous benchmarks,
+ *      Using the same {@link Experiment10_PrimeStreams#isPrime(long, long, long, AtomicLong, AtomicLong)} code as the previous benchmarks,
  *      where we use <tt>isPrime(candiate, minimumLag, maximumLag)</tt> with <tt>minimumLag = 10</tt> ms and
  *      <tt>maximumLag = 30</tt> ms, times 2, or a total of 20 ms minimum and 60 ms maximum, where the actual
  *      lag is random; we simulate some network blocking overhead by using {@link Thread#sleep(long)} before the prime
@@ -278,7 +277,7 @@ import java.util.stream.Stream;
  * @see <a href="https://github.com/openjdk/jmh">Java Microbenchmark Harness (JMH)</a>
  * @author eric@kolotyluk.net
  */
-public class Experiment03_PrimeStreams {
+public class Experiment10_PrimeStreams {
     static final long count1 = 10_000_000;
     static final long count2 = 10_000;
     static final long count3 = 1000;

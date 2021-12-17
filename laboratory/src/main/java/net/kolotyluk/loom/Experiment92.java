@@ -21,10 +21,10 @@ import java.util.stream.IntStream;
  * @see <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/util/concurrent/StructuredExecutor.ShutdownOnSuccess.html">Class StructuredExecutor.ShutdownOnSuccess</a>
  * @see <a href="https://download.java.net/java/early_access/loom/docs/api/java.base/java/lang/ScopeLocal.html">Class ScopeLocal</a>
  */
-public class Experiment06 {
+public class Experiment92 {
 
     public static void main(String args[]) {
-        Context.printHeader(Experiment06.class);
+        Context.printHeader(Experiment92.class);
 
         try {
             var foo = new URI("https://server1/foobar.com/item");

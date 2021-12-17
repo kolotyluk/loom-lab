@@ -98,12 +98,12 @@ import java.util.stream.IntStream;
  * @see <a href="https://www.youtube.com/watch?v=_stAxdjx8qk">Don’t use Reactive Streams in Java 9+</a>
  * @see <a href="https://www.javacodegeeks.com/2019/09/should-parallel-streams-transaction-context.html">Can/Should I use parallel streams in a transaction context?</a>
  */
-public class Experiment10_Flow {
+public class Experiment03_Flow {
 
     final static int MAXIMUM_BUFFER_CAPACITY = 1;
 
     public static void main(String args[]) {
-        Context.printHeader(Experiment10_Flow.class);
+        Context.printHeader(Experiment03_Flow.class);
 
         try (var structuredExecutor = StructuredExecutor.open("Experiment30");
              var submissionPublisher = new SubmissionPublisher<Integer>(structuredExecutor, MAXIMUM_BUFFER_CAPACITY)) {

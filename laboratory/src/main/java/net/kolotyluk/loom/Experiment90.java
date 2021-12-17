@@ -83,7 +83,7 @@ import java.util.function.Consumer;
  * @see <a href="https://wiki.openjdk.java.net/display/loom/Getting+started">Loom Getting Started</a>
  * @see <a href="https://www.youtube.com/watch?v=Nb85yJ1fPXM">Java ExecutorService - Part 1</a>
  */
-public class Experiment02 {
+public class Experiment90 {
 
     public static <R, Int> void main(String args[]){
         System.out.println("Fiber Fun - Experiment 2");

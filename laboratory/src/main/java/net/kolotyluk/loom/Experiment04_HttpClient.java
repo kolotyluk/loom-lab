@@ -6,17 +6,15 @@ import java.time.Duration;
 
 import java.time.Instant;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.URI;
 
-public class Experiment20_HttpClient {
+public class Experiment04_HttpClient {
 
     public static void main2(String args[]) {
-        Context.printHeader(Experiment20_HttpClient.class);
+        Context.printHeader(Experiment04_HttpClient.class);
 
         var virtualThreadFactory  = Thread.ofVirtual().factory();
 
@@ -96,7 +94,7 @@ public class Experiment20_HttpClient {
     }
 
     public static void main(String args[]) {
-        Context.printHeader(Experiment20_HttpClient.class);
+        Context.printHeader(Experiment04_HttpClient.class);
 
         try (var structuredExecutor = StructuredExecutor.open("Experiment20")) {
 

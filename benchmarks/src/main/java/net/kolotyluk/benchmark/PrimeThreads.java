@@ -1,6 +1,6 @@
 package net.kolotyluk.benchmark;
 
-import net.kolotyluk.loom.Experiment03_PrimeStreams;
+import net.kolotyluk.loom.Experiment10_PrimeStreams;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -74,21 +74,21 @@ public class PrimeThreads {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void virtualPrimesTo_1000() {
-        Experiment03_PrimeStreams.futurePrimes22(1_000, virtualThreadFactory);
+        Experiment10_PrimeStreams.futurePrimes22(1_000, virtualThreadFactory);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void virtualPrimesTo_10_000() {
-        Experiment03_PrimeStreams.futurePrimes22(10_000, virtualThreadFactory);
+        Experiment10_PrimeStreams.futurePrimes22(10_000, virtualThreadFactory);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void virtualPrimesTo_10_000_000() {
-        Experiment03_PrimeStreams.futurePrimes22(10_000_000, virtualThreadFactory);
+        Experiment10_PrimeStreams.futurePrimes22(10_000_000, virtualThreadFactory);
     }
 
 
@@ -96,21 +96,21 @@ public class PrimeThreads {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void platformPrimesTo_1000() {
-        Experiment03_PrimeStreams.futurePrimes22(1_000, platformThreadFactory);
+        Experiment10_PrimeStreams.futurePrimes22(1_000, platformThreadFactory);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void platformPrimesTo_10_000() {
-        Experiment03_PrimeStreams.futurePrimes22(10_000, platformThreadFactory);
+        Experiment10_PrimeStreams.futurePrimes22(10_000, platformThreadFactory);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void platformPrimesTo_10_000_000() {
-        Experiment03_PrimeStreams.futurePrimes22(10_000_000, platformThreadFactory);
+        Experiment10_PrimeStreams.futurePrimes22(10_000_000, platformThreadFactory);
     }
 
 }
