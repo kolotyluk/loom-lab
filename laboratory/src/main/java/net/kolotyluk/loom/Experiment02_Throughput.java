@@ -7,7 +7,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.StructuredExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Function;
 import java.util.function.LongFunction;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -111,10 +110,11 @@ import java.util.stream.Stream;
  *
  *     then, without changing W, we need to increase L to increase λ. However, <em>Pure</em> Wait is not the
  *     same as <em>Transactional</em> Wait, and we can see the effects of this in our benchmarks. In these
- *     benchmarks, except for serial Streams, the count to 10, to 100, to 1000, to 10000, indicates a higher
- *     <em>demand</em> for concurrency. However, there are also different implementations of concurrency, which is why
- *     these benchmarks are interesting. A key concept is that is that Level of Concurrency also implies
- *     Quality of Concurrency.
+ *     benchmarks, except for serial Streams, the count to 10, to 100, to 1000, to 10000, (the number of tasks
+ *     created) indicates a higher <em>demand</em> for concurrency. However, there are also different implementations
+ *     of concurrency, which is why these benchmarks are interesting. A key concept is that is that Level of
+ *     Concurrency also implies Quality of Concurrency, where Virtual Threads are able to achieve higher throughput
+ *     than Platform Threads for the same demand.
  * </p>
  * <h2>Parallel vs Sequential</h2>
  * <p>
@@ -187,6 +187,11 @@ import java.util.stream.Stream;
  *     For better context overall, checkout the
  *     <a href="https://kolotyluk.github.io/loom-lab/lexicon.html">lexicon</a> and
  *     <a href="https://kolotyluk.github.io/loom-lab/advantages.html">loom advantages</a>.
+ * </p>
+ * <p>
+ *     Is is worth noting that this benchmark was run on an Intel Xeon W3680 @ 3.33 GHz, with 6 Cores, 12 Hardware
+ *     Threads, and 24 GB RAM. Indeed, on benchmarks where the demand was less than 12, the the number of Hardware
+ *     Threads would be underutilized.
  * </p>
  * @see <a href="https://wiki.openjdk.java.net/display/loom/Getting+started">Loom Getting Started</a>
  * @see <a href="https://www.youtube.com/watch?v=Nb85yJ1fPXM">Java ExecutorService - Part 1</a>
