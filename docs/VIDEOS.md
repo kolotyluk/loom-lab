@@ -3,6 +3,39 @@
 ## 2021-12-17
 - [Project Loom Brings Structured Concurrency - Inside Java Newscast #17](https://www.youtube.com/watch?v=2J2tJm_iwk0)
 - [Java](https://www.youtube.com/channel/UCmRtPmgnQ04CMUpSUqPfhxQ)
+> Project Loom aims to bring structured concurrency to Java, a concept that compares to "regular" concurrency
+> like structured programming compares to GOTO-programming - let's dip our toes into this new concept. Also:
+> JDK 18 feature freeze, JDK migration guide, and nifty things to do with the new simple web server.
+
+### Conclusions
+
+- A good introduction to Structured Concurrency
+- A good reminder of the distinction between Concurrency and Parallelism
+
+## 2021-11-30
+
+- [Project Loom vs Kotlin Coroutines - Urs Peter @ Kotlin Dev Day Amsterdam 2021](https://www.youtube.com/watch?v=_JZeHG71nZA)
+- [Xebia](https://www.youtube.com/channel/UCzuMYhdfdoZeo3UoSgzEHqA)
+> Project Loom will be a game-changer for the JVM’s concurrency model, delivering ‘reactive’ characteristics
+> out-of-the-box without the need for complex concurrency abstractions. What project Loom tries to achieve is
+> already available in Kotlin through Coroutines. So the nagging question is: What will be the faith of Coroutines
+> once Loom delivers? Will they become obsolete?
+>
+> In this talk, I will try to answer this question. We will first recap how Coroutines work and what they offer us,
+> explaining the underlying concepts such as structured concurrency, suspend methods, Continuations, etc. We will
+> then look at how project Loom tries to achieve lightweight concurrency and compare it to Coroutines using many
+> live-coded examples. Disclaimer: Loom is not final yet, and things still can/will change, even though Loom’s
+> central philosophy and approach have been stable so far.
+>
+> At the end of the talk, you will gain a good understanding of what lays ahead of us and what the impact of Loom
+> on Kotlin’s Coroutines will be. Will their raison d’être still hold? Or might Loom even be a blessing in disguise?
+
+### Conclusions
+
+- A lot of great background context that leads to an excellent contrast between Koltin Coroutines and Project Loom,
+  including similarities and differences
+- How Kotlin Coroutines will benefit from Project Loom, and likely result in refactoring of Coroutines
+- 
 
 ## 2020-09-12
 - [Project Loom: Modern Scalable Concurrency for the Java Platform](https://www.youtube.com/watch?v=fOEPEXTpbJA)
@@ -28,10 +61,6 @@
 
 - Project Loom will best help you for I/O Concurrency, but not for CPU Bound Concurrency
 
-### Conclusions
-
-- A good introduction to Structured Concurrency
-- A good reminder of the distinction between Concurrency and Parallelism
 
 ## 2019-07-18
 - [Ron Pressler - Loom: Bringing Lightweight Threads and Delimited Continuations to the JVM](https://www.youtube.com/watch?v=r6P0_FDr53Q)

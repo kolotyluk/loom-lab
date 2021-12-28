@@ -1,17 +1,14 @@
 package net.kolotyluk.loom
 
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 
 import org.junit.jupiter.api.Test
-import java.lang.Thread.sleep
 
 import java.time.Duration
-import kotlin.concurrent.thread
 
-class LagTests {
+class LagTestsK {
 
     private val minimumDuration = Duration.ofMillis(10)
     private val maximumDuration = Duration.ofMillis(20)
