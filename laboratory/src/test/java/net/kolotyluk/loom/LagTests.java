@@ -119,7 +119,7 @@ public class LagTests {
         assertEquals(2, value.get());
     }
 
-    record WithInterruptHandler(AtomicInteger value, Lag lag) implements Runnable {
+    public record WithInterruptHandler(AtomicInteger value, Lag lag) implements Runnable {
         @Override
         public void run() {
             value.set(1);

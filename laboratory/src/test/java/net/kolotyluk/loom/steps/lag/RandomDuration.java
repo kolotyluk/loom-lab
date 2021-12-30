@@ -26,7 +26,7 @@ public class RandomDuration implements En {
             randomDuration = randomLag.getDuration();
         });
 
-        Then("it should not equal either duration", () -> {
+        Then("it should not equal either the minimum or the maximum", () -> {
             assertNotEquals(minimumDuration, randomDuration);
             assertNotEquals(maximumDuration, randomDuration);
         });

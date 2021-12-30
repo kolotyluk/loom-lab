@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefiniteDuration implements En {
 
     Duration minimumDuration = Duration.ofMillis(10);
-    Duration maximumDuration = Duration.ofMillis(20);
 
     Lag definiteLag;
     Duration definiteDuration;
