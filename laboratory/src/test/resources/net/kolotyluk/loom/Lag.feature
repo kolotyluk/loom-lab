@@ -21,14 +21,16 @@ Feature: Induced Lag
     Then it should not equal either the minimum or the maximum
     And it should not be outside the range
 
-  Scenario: Sleep With Interrupt Handler
-    Given a task with random Lag
-    When I start it
-    Then it should start normally
-    And it should complete normally without interrupt
+  Scenario Outline: Sleep
+    Given a task <handler> interrupt handler
+    When  a thread is started with it
+    Then  the thread should start normally
+    And   the thread <interrupted> interrupted
+    And   the thread completes <completion>
+    Examples:
+      | handler | interrupted | completion  |
+      | with    | 'is not'    | normally    |
+      | with    | 'is'        | prematurely |
+      | without | 'is not'    | normally    |
+      | without | 'is'        | prematurely |
 
-#  Scenario: Interrupted Sleep With Interrupt Handler
-#    Given another task with random Lag
-#    When I start it too
-#    Then it should start normally as well
-#    And it should complete prematurely with interrupt

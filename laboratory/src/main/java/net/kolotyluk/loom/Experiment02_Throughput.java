@@ -1,10 +1,11 @@
 package net.kolotyluk.loom;
 
+import jdk.incubator.concurrent.StructuredTaskScope;
+
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
-import java.util.concurrent.StructuredExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.LongFunction;
@@ -273,12 +274,13 @@ public class Experiment02_Throughput {
             }
         };
 
-        try (var structuredExecutor = StructuredExecutor.open("Experiment02", threadFactory)) {
+        try (var structuredExecutor = new StructuredTaskScope.ShutdownOnFailure()) {
             var result = LongStream.range(0,limit)
                     .mapToObj(item -> structuredExecutor.fork(() -> counter.count(task,limit)))
                     .toList();
             structuredExecutor.join();
-            return result.stream().map(Future::resultNow).toList();
+            // return result.stream().map(Future::resultNow).toList();
+            return null;
         } catch (InterruptedException e) {
             e.printStackTrace();
             return Collections.emptyList();

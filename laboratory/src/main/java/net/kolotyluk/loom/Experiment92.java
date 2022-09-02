@@ -1,4 +1,7 @@
+
 package net.kolotyluk.loom;
+
+import jdk.incubator.concurrent.StructuredTaskScope;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,75 +26,75 @@ import java.util.stream.IntStream;
  */
 public class Experiment92 {
 
-    public static void main(String args[]) {
-        Context.printHeader(Experiment92.class);
-
-        try {
-            var foo = new URI("https://server1/foobar.com/item");
-
-            getRemoteStrings().forEach(System.out::println);
-        } catch (ExperimentException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
-    static List<String> getRemoteStrings() throws ExperimentException {
-
-        try (var structuredExecutor = StructuredExecutor.open("Experiment06")) {
-
-            // We want complete results, so we won't tolerate failure.
-            var completionHandler = new StructuredExecutor.ShutdownOnFailure();
-
-            var futureResults = IntStream.range(0, 15).mapToObj(item -> {
-                try {
-                    System.out.printf("item = %d, Thread ID = %s\n", item, Thread.currentThread());
-                    return structuredExecutor.fork(() -> {
-                        try {
-                            System.out.printf("\ttask = %d, Thread ID = %s\n", item, Thread.currentThread());
-                            return getRemoteString(item, new URI("https://server1/foobar.com/item"));
-                        }
-                        catch (Throwable t) {
-                            System.out.printf("TASK EXCEPTION %s\n\t%s\n\n", t.getMessage(), t.getCause());
-                            t.printStackTrace();
-                            throw t;
-                        }
-                    }, completionHandler);
-                } catch (Throwable t) {
-                    System.out.printf("SPAWN EXCEPTION %s\n\t%s\n\n", t.getMessage(), t.getCause());
-                    t.printStackTrace();
-                    throw t;
-                }
-            });
-            structuredExecutor.joinUntil(Instant.now().plusSeconds(10));
-            completionHandler.throwIfFailed();
-            return futureResults.map(Future::resultNow).toList();
-        }
-        catch  (InterruptedException e) {
-            e.printStackTrace();
-            throw new ExperimentException(e);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-            throw new ExperimentException(e);
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-            throw new ExperimentException(e);
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-            throw new ExperimentException(e);
-        }
-        catch (Throwable t) {
-            t.printStackTrace();
-            throw new ExperimentException(t);
-        }
-    }
-
-    static String getRemoteString(int item, URI from) {
-        return "Item %d from %s".formatted(item, from);
-    }
-
-    static class ExperimentException extends Exception {
-        ExperimentException(Throwable cause) {
-            super(cause);
-        }
-    }
+//    public static void main(String args[]) {
+//        Context.printHeader(Experiment92.class);
+//
+//        try {
+//            var foo = new URI("https://server1/foobar.com/item");
+//
+//            getRemoteStrings().forEach(System.out::println);
+//        } catch (ExperimentException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    static List<String> getRemoteStrings() throws ExperimentException {
+//
+//        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+//
+//            // We want complete results, so we won't tolerate failure.
+//            var completionHandler = new StructuredExecutor.ShutdownOnFailure();
+//
+//            var futureResults = IntStream.range(0, 15).mapToObj(item -> {
+//                try {
+//                    System.out.printf("item = %d, Thread ID = %s\n", item, Thread.currentThread());
+//                    return scope.fork(() -> {
+//                        try {
+//                            System.out.printf("\ttask = %d, Thread ID = %s\n", item, Thread.currentThread());
+//                            return getRemoteString(item, new URI("https://server1/foobar.com/item"));
+//                        }
+//                        catch (Throwable t) {
+//                            System.out.printf("TASK EXCEPTION %s\n\t%s\n\n", t.getMessage(), t.getCause());
+//                            t.printStackTrace();
+//                            throw t;
+//                        }
+//                    }, completionHandler);
+//                } catch (Throwable t) {
+//                    System.out.printf("SPAWN EXCEPTION %s\n\t%s\n\n", t.getMessage(), t.getCause());
+//                    t.printStackTrace();
+//                    throw t;
+//                }
+//            });
+//            structuredExecutor.joinUntil(Instant.now().plusSeconds(10));
+//            completionHandler.throwIfFailed();
+//            return futureResults.map(Future::resultNow).toList();
+//        }
+//        catch  (InterruptedException e) {
+//            e.printStackTrace();
+//            throw new ExperimentException(e);
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//            throw new ExperimentException(e);
+//        } catch (TimeoutException e) {
+//            e.printStackTrace();
+//            throw new ExperimentException(e);
+//        } catch (IllegalStateException e) {
+//            e.printStackTrace();
+//            throw new ExperimentException(e);
+//        }
+//        catch (Throwable t) {
+//            t.printStackTrace();
+//            throw new ExperimentException(t);
+//        }
+//    }
+//
+//    static String getRemoteString(int item, URI from) {
+//        return "Item %d from %s".formatted(item, from);
+//    }
+//
+//    static class ExperimentException extends Exception {
+//        ExperimentException(Throwable cause) {
+//            super(cause);
+//        }
+//    }
 }

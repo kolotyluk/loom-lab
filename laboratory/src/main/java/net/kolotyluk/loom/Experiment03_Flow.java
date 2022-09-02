@@ -1,5 +1,7 @@
 package net.kolotyluk.loom;
 
+//import jdk.incubator.concurrent.StructuredTaskScope;
+
 import java.time.Duration;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
@@ -99,119 +101,119 @@ import java.util.stream.IntStream;
  * @see <a href="https://www.javacodegeeks.com/2019/09/should-parallel-streams-transaction-context.html">Can/Should I use parallel streams in a transaction context?</a>
  */
 public class Experiment03_Flow {
-
-    final static int MAXIMUM_BUFFER_CAPACITY = 1;
-
-    public static void main(String args[]) {
-        Context.printHeader(Experiment03_Flow.class);
-
-        try (var structuredExecutor = StructuredExecutor.open("Experiment30");
-             var submissionPublisher = new SubmissionPublisher<Integer>(structuredExecutor, MAXIMUM_BUFFER_CAPACITY)) {
-
-            var subscriber1 = new MySubscriber(1);
-            var subscriber2 = new MySubscriber(2);
-
-            // As a rule, add our subscribers before producing any messages because it's the subscribers that are
-            // buffered, not the publisher. Also, generally, each subscriber will get its own thread from the
-            // Executor so that it can consume messages asynchronously.
-            submissionPublisher.subscribe(subscriber1);
-            submissionPublisher.subscribe(subscriber2);
-
-            // submissionPublisher.offer(1, 10, TimeUnit.SECONDS, (subscriber, msg) -> {return false;});
-
-            // submissionPublisher.submit(1);
-
-            var result = IntStream.range(0, 16)
-                    .mapToObj(item -> {
-                        System.out.printf("item = %d, Thread ID = %s\n", item, Thread.currentThread());
-                        // Note, the publisher may block here if the buffers on the subscribers are full,
-                        // As this is a principle feature of back-pressure.
-                        return Integer.valueOf(submissionPublisher.submit(item));
-                    })
-                    .toList();
-
-            structuredExecutor.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        try (var structuredExecutor = StructuredExecutor.open("Experiment30");
-             var submissionPublisher = new SubmissionPublisher<Integer>(structuredExecutor, MAXIMUM_BUFFER_CAPACITY)) {
-
-            var subscriber1 = new MySubscriber(1);
-            var subscriber2 = new MySubscriber(2);
-
-            submissionPublisher.subscribe(subscriber1);
-            submissionPublisher.subscribe(subscriber2);
-
-            // submissionPublisher.offer(1, 10, TimeUnit.SECONDS, (subscriber, msg) -> {return false;});
-
-            // submissionPublisher.submit(1);
-
-            var result = IntStream.range(0, 16)
-                    .mapToObj(item -> {
-                        System.out.printf("item = %d, Thread ID = %s\n", item, Thread.currentThread());
-                        return structuredExecutor.fork(() -> {
-                            System.out.printf("\tpublisher task = %d, Thread ID = %s\n", item, Thread.currentThread());
-                            // By introducing random lag, we pretty much guarantee items are out of order in the buffers.
-                            // However, when message are produced synchronously, they will always remain in order.
-                            new Lag(Duration.ofMillis(1),Duration.ofMillis(10)).sleep();
-                            // Note, the publisher may block here if the buffers on the subscribers are full,
-                            // As this is a principle feature of back-pressure. However, any thread can produce
-                            // messages, as we are doing here, and with Virtual Threads, we don't care about blocking
-                            // as much as with Platform Threads, because we can design applications with many more
-                            // Virtual Threads than Platform Threads.
-                            return submissionPublisher.submit(item);
-                        });
-                    })
-                    .toList();
-
-            structuredExecutor.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    static class MySubscriber implements Flow.Subscriber<Integer> {
-        final private int id;
-
-        private Flow.Subscription subscription;
-
-        // Thread Safe Concurrent Data Structure
-        private BlockingQueue<String> queue = new ArrayBlockingQueue<String>(20);
-
-        MySubscriber(int id) {
-            this.id = id;
-        }
-
-        @Override
-        public void onSubscribe(Flow.Subscription subscription) {
-            // Critical that we do this, because this is our sessions with our Publisher
-            this.subscription = subscription;
-            // Critical, also, we do this, because we cannot consume anything without requesting it
-            subscription.request(1);
-            System.out.printf("Subscriber %d Subscribed on %s\n", id, Thread.currentThread());
-        }
-
-        @Override
-        public void onNext(Integer item) {
-            var signature = "\tsubscriber %d onNext(%d), Thread ID = %s\n".formatted(id, item, Thread.currentThread());
-            System.out.printf(signature);
-            queue.add(signature);
-            // System.out.println("Consumed " + item);
-            // Critical, also, we do this, because we cannot consume anything without requesting it
-            subscription.request(1);
-        }
-
-        @Override
-        public void onError(Throwable throwable) {
-            throwable.printStackTrace();
-        }
-
-        @Override
-        public void onComplete() {
-            System.out.printf("Subscriber %d Completed on %s\n", id, Thread.currentThread());
-            queue.forEach(item -> System.out.print("\tqueue item:" + item));
-        }
-    }
+//
+//    final static int MAXIMUM_BUFFER_CAPACITY = 1;
+//
+//    public static void main(String args[]) {
+//        Context.printHeader(Experiment03_Flow.class);
+//
+//        try (var scope = new StructuredTaskScope.ShutdownOnFailure();
+//             var submissionPublisher = new SubmissionPublisher<Integer>(scope, MAXIMUM_BUFFER_CAPACITY)) {
+//
+//            var subscriber1 = new MySubscriber(1);
+//            var subscriber2 = new MySubscriber(2);
+//
+//            // As a rule, add our subscribers before producing any messages because it's the subscribers that are
+//            // buffered, not the publisher. Also, generally, each subscriber will get its own thread from the
+//            // Executor so that it can consume messages asynchronously.
+//            submissionPublisher.subscribe(subscriber1);
+//            submissionPublisher.subscribe(subscriber2);
+//
+//            // submissionPublisher.offer(1, 10, TimeUnit.SECONDS, (subscriber, msg) -> {return false;});
+//
+//            // submissionPublisher.submit(1);
+//
+//            var result = IntStream.range(0, 16)
+//                    .mapToObj(item -> {
+//                        System.out.printf("item = %d, Thread ID = %s\n", item, Thread.currentThread());
+//                        // Note, the publisher may block here if the buffers on the subscribers are full,
+//                        // As this is a principle feature of back-pressure.
+//                        return Integer.valueOf(submissionPublisher.submit(item));
+//                    })
+//                    .toList();
+//
+//            scope.join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try (var scope = new StructuredTaskScope.ShutdownOnFailure();
+//             var submissionPublisher = new SubmissionPublisher<Integer>(scope, MAXIMUM_BUFFER_CAPACITY)) {
+//
+//            var subscriber1 = new MySubscriber(1);
+//            var subscriber2 = new MySubscriber(2);
+//
+//            submissionPublisher.subscribe(subscriber1);
+//            submissionPublisher.subscribe(subscriber2);
+//
+//            // submissionPublisher.offer(1, 10, TimeUnit.SECONDS, (subscriber, msg) -> {return false;});
+//
+//            // submissionPublisher.submit(1);
+//
+//            var result = IntStream.range(0, 16)
+//                    .mapToObj(item -> {
+//                        System.out.printf("item = %d, Thread ID = %s\n", item, Thread.currentThread());
+//                        return scope.fork(() -> {
+//                            System.out.printf("\tpublisher task = %d, Thread ID = %s\n", item, Thread.currentThread());
+//                            // By introducing random lag, we pretty much guarantee items are out of order in the buffers.
+//                            // However, when message are produced synchronously, they will always remain in order.
+//                            new Lag(Duration.ofMillis(1),Duration.ofMillis(10)).sleep();
+//                            // Note, the publisher may block here if the buffers on the subscribers are full,
+//                            // As this is a principle feature of back-pressure. However, any thread can produce
+//                            // messages, as we are doing here, and with Virtual Threads, we don't care about blocking
+//                            // as much as with Platform Threads, because we can design applications with many more
+//                            // Virtual Threads than Platform Threads.
+//                            return submissionPublisher.submit(item);
+//                        });
+//                    })
+//                    .toList();
+//
+//            scope.join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    static class MySubscriber implements Flow.Subscriber<Integer> {
+//        final private int id;
+//
+//        private Flow.Subscription subscription;
+//
+//        // Thread Safe Concurrent Data Structure
+//        private BlockingQueue<String> queue = new ArrayBlockingQueue<String>(20);
+//
+//        MySubscriber(int id) {
+//            this.id = id;
+//        }
+//
+//        @Override
+//        public void onSubscribe(Flow.Subscription subscription) {
+//            // Critical that we do this, because this is our sessions with our Publisher
+//            this.subscription = subscription;
+//            // Critical, also, we do this, because we cannot consume anything without requesting it
+//            subscription.request(1);
+//            System.out.printf("Subscriber %d Subscribed on %s\n", id, Thread.currentThread());
+//        }
+//
+//        @Override
+//        public void onNext(Integer item) {
+//            var signature = "\tsubscriber %d onNext(%d), Thread ID = %s\n".formatted(id, item, Thread.currentThread());
+//            System.out.printf(signature);
+//            queue.add(signature);
+//            // System.out.println("Consumed " + item);
+//            // Critical, also, we do this, because we cannot consume anything without requesting it
+//            subscription.request(1);
+//        }
+//
+//        @Override
+//        public void onError(Throwable throwable) {
+//            throwable.printStackTrace();
+//        }
+//
+//        @Override
+//        public void onComplete() {
+//            System.out.printf("Subscriber %d Completed on %s\n", id, Thread.currentThread());
+//            queue.forEach(item -> System.out.print("\tqueue item:" + item));
+//        }
+//    }
 }

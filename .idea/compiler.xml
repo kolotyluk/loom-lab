@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <option name="USE_RELEASE_OPTION" value="false" />
     <annotationProcessing>
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -13,6 +14,12 @@
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_STRING" value="--enable-preview" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="--enable-preview --add-modules jdk.incubator.concurrent" />
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="benchmarks" options="" />
+      <module name="laboratory" options="--add-modules jdk.incubator.concurrent" />
+      <module name="loom-lab" options="" />
+      <module name="old-school" options="" />
+    </option>
   </component>
 </project>

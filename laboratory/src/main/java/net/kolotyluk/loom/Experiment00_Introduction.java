@@ -1,5 +1,7 @@
 package net.kolotyluk.loom;
 
+import jdk.incubator.concurrent.StructuredTaskScope;
+
 import java.time.Instant;
 import java.util.concurrent.*;
 import java.util.function.BiConsumer;
@@ -30,7 +32,7 @@ import java.util.stream.Stream;
  *     by the unindented lines. Note how there are two types of Threads, Platform Threads such as
  *     <tt>Thread[#1,main,5,main]</tt> and Virtual Threads such as <tt>VirtualThread[#17]</tt>, where
  *     Virtual Threads are <em>the</em> new feature of Project Loom. Other new features we see here include
- *     {@link StructuredExecutor}.
+ *     {@link StructuredTaskScope}.
  * </p>
  * @see <a href="https://kolotyluk.github.io/loom-lab/">Project Documentation</a>
  * @see <a href="https://kolotyluk.github.io/loom-lab/advantages.md">Loom Advantages</a>
@@ -43,12 +45,12 @@ public class Experiment00_Introduction {
     public static void main(String args[]) {
         Context.printHeader(Experiment00_Introduction.class);
 
-        try (var structuredExecutor = StructuredExecutor.open("Experiment00")) {
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
 
             // Spawn all our worker tasks...
             var futureList = IntStream.range(0, 16).mapToObj(item -> {
                 System.out.printf("item = %d, Thread ID = %s\n", item, Thread.currentThread());
-                return structuredExecutor.fork(() -> {
+                return scope.fork(() -> {
                     System.out.printf("\ttask = %d, Thread ID = %s\n", item, Thread.currentThread());
                     // Note that task input and output can be different types
                     return "task %d result".formatted(item);
@@ -56,14 +58,13 @@ public class Experiment00_Introduction {
             }).collect(Collectors.toList());
 
             // Wait for all our worker tasks to complete...
-            structuredExecutor.join();
+            scope.join();
 
             // Note a good practices is to use a Java Stream to spawn tasks, collect their Future results,
             // then get the results of the completed Futures. Of course this is much more simple to do with
             // Parallel Stream, but as we will see later, there are cases where Virtual Threads have advantages
             // over Parallel Stream.
             var completedResults = futureList.stream().map(Future::resultNow).toList();
-
             System.out.println(completedResults);
         }
         catch (InterruptedException e) {

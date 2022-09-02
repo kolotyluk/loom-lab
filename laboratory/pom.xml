@@ -24,11 +24,13 @@
 
 
     <properties>
+        <maven.compiler.executable>${env.JAVA_HOME}/bin/javac</maven.compiler.executable>
+        <maven.compiler.source>19</maven.compiler.source>
+        <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <kotlin.code.style>official</kotlin.code.style>
         <junit.version>4.12</junit.version>
-        <maven.compiler.source>18</maven.compiler.source>
-        <maven.compiler.target>18</maven.compiler.target>
         <scala.version>2.13.7</scala.version>
 <!--
         <scala.home>C:\Program Files (Open)\scala3-3.1.0</scala.home>
@@ -122,8 +124,6 @@
         </dependency>
     </dependencies>
 
-
-
     <build>
 <!--
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -132,9 +132,28 @@
 -->
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
                 <configuration>
-                    <compilerArgs>--enable-preview</compilerArgs>
+                    <source>19</source>
+                    <target>19</target>
+                    <encoding>UTF-8</encoding>
+                    <enablePreview>true</enablePreview>
+                    <compilerArgs>
+                        <compilerArg>--add-modules</compilerArg>
+                        <compilerArg>jdk.incubator.concurrent</compilerArg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+<!--
+                    <argLine>&#45;&#45;enable-preview &#45;&#45;add-modules jdk.incubator.concurrent</argLine>
+-->
                 </configuration>
             </plugin>
             <plugin>
